@@ -11,9 +11,12 @@
 }
 
 .andw-lightbox-link[data-andw-transform="slide"] {
-    overflow: hidden;
+    overflow: hidden !important;
     position: relative;
     display: block;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .andw-lightbox-link[data-andw-transform="slide"] img {
@@ -21,6 +24,21 @@
     height: auto;
     transform: translateX(-5%);
     display: block;
+    max-width: none;
+    object-fit: cover;
+}
+
+/* より強力なクリッピング */
+.andw-lightbox-link[data-andw-transform="slide"]::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -1px;
+    bottom: 0;
+    width: 12%;
+    background: transparent;
+    pointer-events: none;
+    z-index: 1;
 }
 
 .andw-lightbox-link:focus-visible {
