@@ -13,7 +13,7 @@
 .andw-lightbox-link img {
     display: block;
     height: auto;
-    transition: filter 0.3s ease, opacity 0.3s ease;
+    transition: filter 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
 }
 
 .andw-lightbox-link[data-andw-hover="darken"]:hover img,
@@ -29,6 +29,16 @@
 .andw-lightbox-link[data-andw-hover="transparent"]:hover img,
 .andw-lightbox-link[data-andw-hover="transparent"]:focus img {
     opacity: calc(1 - var(--andw-hover-strength));
+}
+
+.andw-lightbox-link[data-andw-hover="slide"]:hover img,
+.andw-lightbox-link[data-andw-hover="slide"]:focus img {
+    transform: translateX(calc(var(--andw-hover-strength) * 20px));
+}
+
+.andw-lightbox-link[data-andw-hover="zoom"]:hover img,
+.andw-lightbox-link[data-andw-hover="zoom"]:focus img {
+    transform: scale(calc(1 + var(--andw-hover-strength) * 0.2));
 }
 
 .andw-lightbox-link[data-andw-hover="none"] img {

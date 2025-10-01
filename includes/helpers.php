@@ -97,6 +97,8 @@ if ( ! function_exists( 'andw_lightbox_get_hover_options' ) ) {
             'darken'      => __( '暗くする', 'andw-lightbox' ),
             'lighten'     => __( '明るくする', 'andw-lightbox' ),
             'transparent' => __( '透明にする', 'andw-lightbox' ),
+            'slide'       => __( 'スライド', 'andw-lightbox' ),
+            'zoom'        => __( 'ズーム', 'andw-lightbox' ),
         );
     }
 }

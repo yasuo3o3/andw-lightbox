@@ -124,7 +124,7 @@ class Andw_Lightbox_Frontend {
         }
 
         $hover = isset( $attrs['andwLightboxHover'] ) ? sanitize_key( $attrs['andwLightboxHover'] ) : $defaults['hover'];
-        $hover_choices = array( 'none', 'darken', 'lighten', 'transparent' );
+        $hover_choices = array( 'none', 'darken', 'lighten', 'transparent', 'slide', 'zoom' );
         if ( ! in_array( $hover, $hover_choices, true ) ) {
             $hover = 'none';
         }
