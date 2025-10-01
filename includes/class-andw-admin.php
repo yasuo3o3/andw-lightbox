@@ -50,6 +50,8 @@ class Andw_Lightbox_Admin {
         add_settings_field( 'default_animation', __( 'スライドアニメーション', 'andw-lightbox' ), array( $this, 'field_default_animation' ), 'andw-lightbox', 'andw_lightbox_general' );
         add_settings_field( 'default_hover', __( 'ホバー効果', 'andw-lightbox' ), array( $this, 'field_default_hover' ), 'andw-lightbox', 'andw_lightbox_general' );
         add_settings_field( 'default_hover_strength', __( 'ホバー強度', 'andw-lightbox' ), array( $this, 'field_default_hover_strength' ), 'andw-lightbox', 'andw_lightbox_general' );
+        add_settings_field( 'default_transform', __( 'ホバートランスフォーム', 'andw-lightbox' ), array( $this, 'field_default_transform' ), 'andw-lightbox', 'andw_lightbox_general' );
+        add_settings_field( 'default_transform_strength', __( 'トランスフォーム強度', 'andw-lightbox' ), array( $this, 'field_default_transform_strength' ), 'andw-lightbox', 'andw_lightbox_general' );
         add_settings_field( 'default_size', __( '拡大画像サイズ', 'andw-lightbox' ), array( $this, 'field_default_size' ), 'andw-lightbox', 'andw_lightbox_general' );
         add_settings_field( 'allow_full', __( 'フルサイズ許可', 'andw-lightbox' ), array( $this, 'field_allow_full' ), 'andw-lightbox', 'andw_lightbox_general' );
         add_settings_field( 'infinite_scroll', __( '無限スクロール対応', 'andw-lightbox' ), array( $this, 'field_infinite_scroll' ), 'andw-lightbox', 'andw_lightbox_general' );
@@ -236,6 +238,32 @@ class Andw_Lightbox_Admin {
             );
         }
         echo '</select>';
+    }
+
+    public function field_default_transform() {
+        $current = $this->settings->get( 'default_transform' );
+        $choices = andw_lightbox_get_transform_options();
+
+        echo '<select name="' . esc_attr( $this->option_name() ) . '[default_transform]">';
+        foreach ( $choices as $value => $label ) {
+            printf(
+                '<option value="%1$s" %2$s>%3$s</option>',
+                esc_attr( $value ),
+                selected( $value, $current, false ),
+                esc_html( $label )
+            );
+        }
+        echo '</select>';
+    }
+
+    public function field_default_transform_strength() {
+        $value = intval( $this->settings->get( 'default_transform_strength' ) );
+        printf(
+            '<input type="number" min="0" max="100" step="1" name="%1$s[default_transform_strength]" value="%2$d" class="small-text"> <span class="description">%3$s</span>',
+            esc_attr( $this->option_name() ),
+            $value,
+            esc_html__( '0〜100 の範囲でトランスフォーム強度を指定します。', 'andw-lightbox' )
+        );
     }
 
     public function field_glightbox_version() {

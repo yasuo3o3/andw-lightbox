@@ -3,6 +3,20 @@
     display: inline-block;
     text-decoration: none;
     --andw-hover-strength: 0;
+    --andw-transform-strength: 0;
+}
+
+.andw-lightbox-link[data-andw-transform="zoom"] {
+    overflow: hidden;
+}
+
+.andw-lightbox-link[data-andw-transform="slide"] {
+    overflow: hidden;
+}
+
+.andw-lightbox-link[data-andw-transform="slide"] img {
+    width: 110%;
+    transform: translateX(-5%);
 }
 
 .andw-lightbox-link:focus-visible {
@@ -31,14 +45,14 @@
     opacity: calc(1 - var(--andw-hover-strength));
 }
 
-.andw-lightbox-link[data-andw-hover="slide"]:hover img,
-.andw-lightbox-link[data-andw-hover="slide"]:focus img {
-    transform: translateX(calc(var(--andw-hover-strength) * 20px));
+.andw-lightbox-link[data-andw-transform="slide"]:hover img,
+.andw-lightbox-link[data-andw-transform="slide"]:focus img {
+    transform: translateX(calc(-5% + var(--andw-transform-strength) * 10%));
 }
 
-.andw-lightbox-link[data-andw-hover="zoom"]:hover img,
-.andw-lightbox-link[data-andw-hover="zoom"]:focus img {
-    transform: scale(calc(1 + var(--andw-hover-strength) * 0.2));
+.andw-lightbox-link[data-andw-transform="zoom"]:hover img,
+.andw-lightbox-link[data-andw-transform="zoom"]:focus img {
+    transform: scale(calc(1 + var(--andw-transform-strength) * 0.2));
 }
 
 .andw-lightbox-link[data-andw-hover="none"] img {

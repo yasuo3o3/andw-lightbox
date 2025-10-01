@@ -108,6 +108,8 @@ class Andw_Lightbox_Frontend {
             'animation'      => sanitize_key( $this->settings->get( 'default_animation' ) ),
             'hover'          => sanitize_key( $this->settings->get( 'default_hover' ) ),
             'hover_strength' => intval( $this->settings->get( 'default_hover_strength' ) ),
+            'transform'      => sanitize_key( $this->settings->get( 'default_transform' ) ),
+            'transform_strength' => intval( $this->settings->get( 'default_transform_strength' ) ),
             'size'           => sanitize_key( $this->settings->get( 'default_size' ) ),
             'title'          => '',
             'description'    => '',
@@ -124,7 +126,7 @@ class Andw_Lightbox_Frontend {
         }
 
         $hover = isset( $attrs['andwLightboxHover'] ) ? sanitize_key( $attrs['andwLightboxHover'] ) : $defaults['hover'];
-        $hover_choices = array( 'none', 'darken', 'lighten', 'transparent', 'slide', 'zoom' );
+        $hover_choices = array( 'none', 'darken', 'lighten', 'transparent' );
         if ( ! in_array( $hover, $hover_choices, true ) ) {
             $hover = 'none';
         }
@@ -141,12 +143,26 @@ class Andw_Lightbox_Frontend {
             $size = 'default';
         }
 
+        $transform = isset( $attrs['andwLightboxTransform'] ) ? sanitize_key( $attrs['andwLightboxTransform'] ) : $defaults['transform'];
+        $transform_choices = array( 'none', 'slide', 'zoom' );
+        if ( ! in_array( $transform, $transform_choices, true ) ) {
+            $transform = 'none';
+        }
+
         $hover_strength = isset( $attrs['andwLightboxHoverStrength'] ) ? intval( $attrs['andwLightboxHoverStrength'] ) : $defaults['hover_strength'];
         if ( $hover_strength < 0 ) {
             $hover_strength = 0;
         }
         if ( $hover_strength > 100 ) {
             $hover_strength = 100;
+        }
+
+        $transform_strength = isset( $attrs['andwLightboxTransformStrength'] ) ? intval( $attrs['andwLightboxTransformStrength'] ) : $defaults['transform_strength'];
+        if ( $transform_strength < 0 ) {
+            $transform_strength = 0;
+        }
+        if ( $transform_strength > 100 ) {
+            $transform_strength = 100;
         }
 
         return array(
@@ -156,6 +172,8 @@ class Andw_Lightbox_Frontend {
             'animation'      => $animation,
             'hover'          => $hover,
             'hover_strength' => $hover_strength,
+            'transform'      => $transform,
+            'transform_strength' => $transform_strength,
             'size'           => $size,
             'title'          => isset( $attrs['andwLightboxTitle'] ) ? sanitize_text_field( $attrs['andwLightboxTitle'] ) : $defaults['title'],
             'description'    => isset( $attrs['andwLightboxDescription'] ) ? sanitize_textarea_field( $attrs['andwLightboxDescription'] ) : $defaults['description'],
@@ -211,9 +229,20 @@ class Andw_Lightbox_Frontend {
                 $anchor->setAttribute( 'data-andw-animation', $settings['animation'] );
             }
 
+            $style_parts = array();
+
             if ( 'none' !== $settings['hover'] ) {
                 $anchor->setAttribute( 'data-andw-hover', $settings['hover'] );
-                $anchor->setAttribute( 'style', '--andw-hover-strength:' . andw_lightbox_strength_to_css_value( $settings['hover_strength'] ) . ';' );
+                $style_parts[] = '--andw-hover-strength:' . andw_lightbox_strength_to_css_value( $settings['hover_strength'] );
+            }
+
+            if ( 'none' !== $settings['transform'] ) {
+                $anchor->setAttribute( 'data-andw-transform', $settings['transform'] );
+                $style_parts[] = '--andw-transform-strength:' . andw_lightbox_strength_to_css_value( $settings['transform_strength'] );
+            }
+
+            if ( ! empty( $style_parts ) ) {
+                $anchor->setAttribute( 'style', implode( ';', $style_parts ) . ';' );
             }
 
             $title = $settings['title'];

@@ -52,6 +52,8 @@ class Andw_Lightbox_Settings {
             'default_gallery'        => 'single',
             'default_hover'          => 'none',
             'default_hover_strength' => '40',
+            'default_transform'      => 'none',
+            'default_transform_strength' => '40',
             'default_animation'      => 'slide',
             'default_size'           => 'default',
             'allow_full'             => '0',
@@ -89,6 +91,8 @@ class Andw_Lightbox_Settings {
         $sanitized['default_gallery'] = andw_lightbox_sanitize_select( andw_lightbox_array_get( $input, 'default_gallery', $defaults['default_gallery'] ), andw_lightbox_get_gallery_options() );
         $sanitized['default_hover']   = andw_lightbox_sanitize_select( andw_lightbox_array_get( $input, 'default_hover', $defaults['default_hover'] ), andw_lightbox_get_hover_options() );
         $sanitized['default_hover_strength'] = andw_lightbox_sanitize_int_range( andw_lightbox_array_get( $input, 'default_hover_strength', $defaults['default_hover_strength'] ), 0, 100 );
+        $sanitized['default_transform']      = andw_lightbox_sanitize_select( andw_lightbox_array_get( $input, 'default_transform', $defaults['default_transform'] ), andw_lightbox_get_transform_options() );
+        $sanitized['default_transform_strength'] = andw_lightbox_sanitize_int_range( andw_lightbox_array_get( $input, 'default_transform_strength', $defaults['default_transform_strength'] ), 0, 100 );
         $sanitized['default_animation']      = andw_lightbox_sanitize_select( andw_lightbox_array_get( $input, 'default_animation', $defaults['default_animation'] ), andw_lightbox_get_animation_options() );
         $sanitized['default_size']           = andw_lightbox_sanitize_select( andw_lightbox_array_get( $input, 'default_size', $defaults['default_size'] ), andw_lightbox_get_registered_size_choices() );
         $sanitized['allow_full']             = andw_lightbox_sanitize_checkbox( andw_lightbox_array_get( $input, 'allow_full', $defaults['allow_full'] ) );
