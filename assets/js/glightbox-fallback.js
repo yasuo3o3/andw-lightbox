@@ -161,11 +161,11 @@
     };
 
     LightboxInstance.prototype.getEffectKey = function () {
-        var effect = this.settings.slideEffect;
-        if (effect === 'fade' || effect === 'zoom' || effect === 'slide') {
+        var effect = this.settings.openEffect;
+        if (effect === 'fade' || effect === 'zoom' || effect === 'none') {
             return effect;
         }
-        return 'slide';
+        return 'zoom';
     };
 
     LightboxInstance.prototype.showSlide = function (index) {
