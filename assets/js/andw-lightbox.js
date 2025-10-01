@@ -73,9 +73,20 @@
             slideEffect: resolvedEffect
         };
 
+        // アニメーション効果を開閉効果にも適用
         if (resolvedEffect === 'none') {
             opts.openEffect = 'none';
             opts.closeEffect = 'none';
+        } else if (resolvedEffect === 'fade') {
+            opts.openEffect = 'fade';
+            opts.closeEffect = 'fade';
+        } else if (resolvedEffect === 'zoom') {
+            opts.openEffect = 'zoom';
+            opts.closeEffect = 'zoom';
+        } else {
+            // slide または その他の場合はzoomを使用（GLightboxのデフォルト）
+            opts.openEffect = 'zoom';
+            opts.closeEffect = 'zoom';
         }
 
         return opts;
