@@ -1,8 +1,8 @@
 === andW Lightbox ===
-Contributors: netservice
+Contributors: yasuo3o3
 Tags: lightbox, gallery, media, images
 Requires at least: 6.0
-Tested up to: 6.4
+Tested up to: 6.8
 Requires PHP: 7.4
 Stable tag: 0.1.0
 License: GPLv2 or later

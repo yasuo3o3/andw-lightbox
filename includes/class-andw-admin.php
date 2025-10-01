@@ -103,28 +103,19 @@ class Andw_Lightbox_Admin {
         return $this->settings->get_option_name();
     }
 
-    private function is_checked( $key ) {
-        return checked( $this->settings->is_enabled_flag( $key ), true, false );
-    }
 
     public function field_enabled() {
-        printf(
-            '<label><input type="checkbox" name="%1$s[enabled]" value="1" %2$s> %3$s</label><p class="description">%4$s</p>',
-            esc_attr( $this->option_name() ),
-            $this->is_checked( 'enabled' ),
-            esc_html__( 'フロントエンドでライトボックスを既定で有効化', 'andw-lightbox' ),
-            esc_html__( '添付ファイルのメタ情報で個別に無効化できます。', 'andw-lightbox' )
-        );
+        echo '<label><input type="checkbox" name="' . esc_attr( $this->option_name() ) . '[enabled]" value="1" ';
+        checked( $this->settings->is_enabled_flag( 'enabled' ), true );
+        echo '> ' . esc_html__( 'フロントエンドでライトボックスを既定で有効化', 'andw-lightbox' ) . '</label>';
+        echo '<p class="description">' . esc_html__( '添付ファイルのメタ情報で個別に無効化できます。', 'andw-lightbox' ) . '</p>';
     }
 
     public function field_default_slide() {
-        printf(
-            '<label><input type="checkbox" name="%1$s[default_slide]" value="1" %2$s> %3$s</label><p class="description">%4$s</p>',
-            esc_attr( $this->option_name() ),
-            $this->is_checked( 'default_slide' ),
-            esc_html__( '同一ギャラリー内でのスライド切り替えを許可', 'andw-lightbox' ),
-            esc_html__( 'OFF にすると個別画像のみ表示します。', 'andw-lightbox' )
-        );
+        echo '<label><input type="checkbox" name="' . esc_attr( $this->option_name() ) . '[default_slide]" value="1" ';
+        checked( $this->settings->is_enabled_flag( 'default_slide' ), true );
+        echo '> ' . esc_html__( '同一ギャラリー内でのスライド切り替えを許可', 'andw-lightbox' ) . '</label>';
+        echo '<p class="description">' . esc_html__( 'OFF にすると個別画像のみ表示します。', 'andw-lightbox' ) . '</p>';
     }
 
     public function field_default_gallery() {
@@ -133,12 +124,9 @@ class Andw_Lightbox_Admin {
 
         echo '<select name="' . esc_attr( $this->option_name() ) . '[default_gallery]">';
         foreach ( $choices as $value => $label ) {
-            printf(
-                '<option value="%1$s" %2$s>%3$s</option>',
-                esc_attr( $value ),
-                selected( $value, $current, false ),
-                esc_html( $label )
-            );
+            echo '<option value="' . esc_attr( $value ) . '" ';
+            selected( $value, $current );
+            echo '>' . esc_html( $label ) . '</option>';
         }
         echo '</select>';
         echo '<p class="description">' . esc_html__( '固定ギャラリー番号の既定値を指定します。', 'andw-lightbox' ) . '</p>';
@@ -150,12 +138,9 @@ class Andw_Lightbox_Admin {
 
         echo '<select name="' . esc_attr( $this->option_name() ) . '[default_animation]">';
         foreach ( $choices as $value => $label ) {
-            printf(
-                '<option value="%1$s" %2$s>%3$s</option>',
-                esc_attr( $value ),
-                selected( $value, $current, false ),
-                esc_html( $label )
-            );
+            echo '<option value="' . esc_attr( $value ) . '" ';
+            selected( $value, $current );
+            echo '>' . esc_html( $label ) . '</option>';
         }
         echo '</select>';
     }
@@ -166,12 +151,9 @@ class Andw_Lightbox_Admin {
 
         echo '<select name="' . esc_attr( $this->option_name() ) . '[default_hover]">';
         foreach ( $choices as $value => $label ) {
-            printf(
-                '<option value="%1$s" %2$s>%3$s</option>',
-                esc_attr( $value ),
-                selected( $value, $current, false ),
-                esc_html( $label )
-            );
+            echo '<option value="' . esc_attr( $value ) . '" ';
+            selected( $value, $current );
+            echo '>' . esc_html( $label ) . '</option>';
         }
         echo '</select>';
     }
@@ -179,9 +161,9 @@ class Andw_Lightbox_Admin {
     public function field_default_hover_strength() {
         $value = intval( $this->settings->get( 'default_hover_strength' ) );
         printf(
-            '<input type="number" min="0" max="100" step="1" name="%1$s[default_hover_strength]" value="%2$d" class="small-text"> <span class="description">%3$s</span>',
+            '<input type="number" min="0" max="100" step="1" name="%1$s[default_hover_strength]" value="%2$s" class="small-text"> <span class="description">%3$s</span>',
             esc_attr( $this->option_name() ),
-            $value,
+            esc_attr( $value ),
             esc_html__( '0〜100 の範囲でホバー強度を指定します。', 'andw-lightbox' )
         );
     }
@@ -192,33 +174,24 @@ class Andw_Lightbox_Admin {
 
         echo '<select name="' . esc_attr( $this->option_name() ) . '[default_size]">';
         foreach ( $choices as $value => $label ) {
-            printf(
-                '<option value="%1$s" %2$s>%3$s</option>',
-                esc_attr( $value ),
-                selected( $value, $current, false ),
-                esc_html( $label )
-            );
+            echo '<option value="' . esc_attr( $value ) . '" ';
+            selected( $value, $current );
+            echo '>' . esc_html( $label ) . '</option>';
         }
         echo '</select>';
     }
 
     public function field_allow_full() {
-        printf(
-            '<label><input type="checkbox" name="%1$s[allow_full]" value="1" %2$s> %3$s</label>',
-            esc_attr( $this->option_name() ),
-            $this->is_checked( 'allow_full' ),
-            esc_html__( '中間サイズが無い場合にフルサイズへフォールバックを許可', 'andw-lightbox' )
-        );
+        echo '<label><input type="checkbox" name="' . esc_attr( $this->option_name() ) . '[allow_full]" value="1" ';
+        checked( $this->settings->is_enabled_flag( 'allow_full' ), true );
+        echo '> ' . esc_html__( '中間サイズが無い場合にフルサイズへフォールバックを許可', 'andw-lightbox' ) . '</label>';
     }
 
     public function field_infinite_scroll() {
-        printf(
-            '<label><input type="checkbox" name="%1$s[infinite_scroll]" value="1" %2$s> %3$s</label><p class="description">%4$s</p>',
-            esc_attr( $this->option_name() ),
-            $this->is_checked( 'infinite_scroll' ),
-            esc_html__( 'MutationObserver を使用して無限スクロールで追加された要素を初期化', 'andw-lightbox' ),
-            esc_html__( '大量の DOM 変更がある環境ではパフォーマンスへ影響する可能性があります。', 'andw-lightbox' )
-        );
+        echo '<label><input type="checkbox" name="' . esc_attr( $this->option_name() ) . '[infinite_scroll]" value="1" ';
+        checked( $this->settings->is_enabled_flag( 'infinite_scroll' ), true );
+        echo '> ' . esc_html__( 'MutationObserver を使用して無限スクロールで追加された要素を初期化', 'andw-lightbox' ) . '</label>';
+        echo '<p class="description">' . esc_html__( '大量の DOM 変更がある環境ではパフォーマンスへ影響する可能性があります。', 'andw-lightbox' ) . '</p>';
     }
 
     public function field_glightbox_source() {
@@ -230,12 +203,9 @@ class Andw_Lightbox_Admin {
 
         echo '<select name="' . esc_attr( $this->option_name() ) . '[glightbox_source]">';
         foreach ( $choices as $value => $label ) {
-            printf(
-                '<option value="%1$s" %2$s>%3$s</option>',
-                esc_attr( $value ),
-                selected( $value, $current, false ),
-                esc_html( $label )
-            );
+            echo '<option value="' . esc_attr( $value ) . '" ';
+            selected( $value, $current );
+            echo '>' . esc_html( $label ) . '</option>';
         }
         echo '</select>';
     }
@@ -246,12 +216,9 @@ class Andw_Lightbox_Admin {
 
         echo '<select name="' . esc_attr( $this->option_name() ) . '[default_transform]">';
         foreach ( $choices as $value => $label ) {
-            printf(
-                '<option value="%1$s" %2$s>%3$s</option>',
-                esc_attr( $value ),
-                selected( $value, $current, false ),
-                esc_html( $label )
-            );
+            echo '<option value="' . esc_attr( $value ) . '" ';
+            selected( $value, $current );
+            echo '>' . esc_html( $label ) . '</option>';
         }
         echo '</select>';
     }
@@ -259,9 +226,9 @@ class Andw_Lightbox_Admin {
     public function field_default_transform_strength() {
         $value = intval( $this->settings->get( 'default_transform_strength' ) );
         printf(
-            '<input type="number" min="0" max="100" step="1" name="%1$s[default_transform_strength]" value="%2$d" class="small-text"> <span class="description">%3$s</span>',
+            '<input type="number" min="0" max="100" step="1" name="%1$s[default_transform_strength]" value="%2$s" class="small-text"> <span class="description">%3$s</span>',
             esc_attr( $this->option_name() ),
-            $value,
+            esc_attr( $value ),
             esc_html__( '0〜100 の範囲でトランスフォーム強度を指定します。', 'andw-lightbox' )
         );
     }

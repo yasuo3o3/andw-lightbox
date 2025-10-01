@@ -67,14 +67,5 @@ final class Andw_Lightbox_Plugin {
         $this->admin        = new Andw_Lightbox_Admin( $this->settings );
         $this->block_editor = new Andw_Lightbox_Block_Editor( $this->settings );
         $this->frontend     = new Andw_Lightbox_Frontend( $this->settings, $this->assets );
-
-        add_action( 'init', array( $this, 'load_textdomain' ) );
-    }
-
-    /**
-     * Load plugin textdomain.
-     */
-    public function load_textdomain() {
-        load_plugin_textdomain( 'andw-lightbox', false, dirname( plugin_basename( ANDW_LIGHTBOX_PLUGIN_FILE ) ) . '/languages' );
     }
 }
