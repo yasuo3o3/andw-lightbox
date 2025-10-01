@@ -12,9 +12,6 @@ class Andw_Lightbox_Frontend {
     /** @var Andw_Lightbox_Assets */
     private $assets;
 
-    /** @var Andw_Lightbox_Media_Meta */
-    private $media_meta;
-
     /**
      * Supported block names.
      *
@@ -26,10 +23,9 @@ class Andw_Lightbox_Frontend {
         'core/media-text',
     );
 
-    public function __construct( Andw_Lightbox_Settings $settings, Andw_Lightbox_Assets $assets, Andw_Lightbox_Media_Meta $media_meta ) {
-        $this->settings   = $settings;
-        $this->assets     = $assets;
-        $this->media_meta = $media_meta;
+    public function __construct( Andw_Lightbox_Settings $settings, Andw_Lightbox_Assets $assets ) {
+        $this->settings = $settings;
+        $this->assets   = $assets;
 
         add_filter( 'render_block', array( $this, 'filter_block' ), 20, 2 );
         add_filter( 'the_content', array( $this, 'filter_content' ), 20 );
@@ -41,7 +37,8 @@ class Andw_Lightbox_Frontend {
             return $block_content;
         }
 
-        if ( ! in_array( andw_lightbox_array_get( $block, 'blockName', '' ), $this->supported_blocks, true ) ) {
+        $block_name = andw_lightbox_array_get( $block, 'blockName', '' );
+        if ( ! in_array( $block_name, $this->supported_blocks, true ) ) {
             return $block_content;
         }
 
@@ -49,7 +46,14 @@ class Andw_Lightbox_Frontend {
             return $block_content;
         }
 
-        return $this->process_html( $block_content, get_the_ID() );
+        $attrs    = andw_lightbox_array_get( $block, 'attrs', array() );
+        $settings = $this->normalize_block_settings( $attrs );
+
+        if ( ! $settings['enabled'] ) {
+            return $block_content;
+        }
+
+        return $this->process_html( $block_content, get_the_ID(), $settings );
     }
 
     public function filter_content( $content ) {
@@ -57,15 +61,25 @@ class Andw_Lightbox_Frontend {
             return $content;
         }
 
-        return $this->process_html( $content, get_the_ID() );
+        $settings = $this->normalize_block_settings( array() );
+        if ( ! $settings['enabled'] ) {
+            return $content;
+        }
+
+        return $this->process_html( $content, get_the_ID(), $settings );
     }
 
-    public function filter_thumbnail( $html, $post_id, $thumbnail_id ) {
+    public function filter_thumbnail( $html, $post_id, $post_thumbnail_id, $size, $attr ) {
         if ( empty( $html ) || ! $this->should_process() ) {
             return $html;
         }
 
-        return $this->process_html( $html, $post_id );
+        $settings = $this->normalize_block_settings( array() );
+        if ( ! $settings['enabled'] ) {
+            return $html;
+        }
+
+        return $this->process_html( $html, $post_id, $settings );
     }
 
     private function should_process() {
@@ -80,7 +94,79 @@ class Andw_Lightbox_Frontend {
         return true;
     }
 
-    private function process_html( $html, $post_id ) {
+    /**
+     * Merge block attributes with global defaults.
+     *
+     * @param array $attrs Block attributes.
+     * @return array
+     */
+    private function normalize_block_settings( $attrs ) {
+        $defaults = array(
+            'enabled'        => $this->settings->is_enabled_flag( 'enabled' ),
+            'slide'          => $this->settings->is_enabled_flag( 'default_slide' ),
+            'gallery'        => sanitize_key( $this->settings->get( 'default_gallery' ) ),
+            'animation'      => sanitize_key( $this->settings->get( 'default_animation' ) ),
+            'hover'          => sanitize_key( $this->settings->get( 'default_hover' ) ),
+            'hover_strength' => intval( $this->settings->get( 'default_hover_strength' ) ),
+            'size'           => sanitize_key( $this->settings->get( 'default_size' ) ),
+            'title'          => '',
+            'description'    => '',
+            'allow_full'     => $this->settings->is_enabled_flag( 'allow_full' ),
+        );
+
+        $animation = isset( $attrs['andwLightboxAnimation'] ) ? sanitize_key( $attrs['andwLightboxAnimation'] ) : $defaults['animation'];
+        if ( 'default' === $animation ) {
+            $animation = 'slide';
+        }
+        $animation_choices = array( 'none', 'fade', 'zoom', 'slide' );
+        if ( ! in_array( $animation, $animation_choices, true ) ) {
+            $animation = 'slide';
+        }
+
+        $hover = isset( $attrs['andwLightboxHover'] ) ? sanitize_key( $attrs['andwLightboxHover'] ) : $defaults['hover'];
+        $hover_choices = array( 'none', 'darken', 'lighten', 'transparent' );
+        if ( ! in_array( $hover, $hover_choices, true ) ) {
+            $hover = 'none';
+        }
+
+        $gallery = isset( $attrs['andwLightboxGallery'] ) ? sanitize_key( $attrs['andwLightboxGallery'] ) : $defaults['gallery'];
+        $gallery_options = array_keys( andw_lightbox_get_gallery_options() );
+        if ( ! in_array( $gallery, $gallery_options, true ) ) {
+            $gallery = 'single';
+        }
+
+        $size = isset( $attrs['andwLightboxSize'] ) ? sanitize_key( $attrs['andwLightboxSize'] ) : $defaults['size'];
+        $size_options = array_keys( andw_lightbox_get_registered_size_choices() );
+        if ( ! in_array( $size, $size_options, true ) ) {
+            $size = 'default';
+        }
+
+        $hover_strength = isset( $attrs['andwLightboxHoverStrength'] ) ? intval( $attrs['andwLightboxHoverStrength'] ) : $defaults['hover_strength'];
+        if ( $hover_strength < 0 ) {
+            $hover_strength = 0;
+        }
+        if ( $hover_strength > 100 ) {
+            $hover_strength = 100;
+        }
+
+        return array(
+            'enabled'        => isset( $attrs['andwLightboxEnabled'] ) ? (bool) $attrs['andwLightboxEnabled'] : (bool) $defaults['enabled'],
+            'slide'          => isset( $attrs['andwLightboxSlide'] ) ? (bool) $attrs['andwLightboxSlide'] : (bool) $defaults['slide'],
+            'gallery'        => $gallery,
+            'animation'      => $animation,
+            'hover'          => $hover,
+            'hover_strength' => $hover_strength,
+            'size'           => $size,
+            'title'          => isset( $attrs['andwLightboxTitle'] ) ? sanitize_text_field( $attrs['andwLightboxTitle'] ) : $defaults['title'],
+            'description'    => isset( $attrs['andwLightboxDescription'] ) ? sanitize_textarea_field( $attrs['andwLightboxDescription'] ) : $defaults['description'],
+            'allow_full'     => (bool) $defaults['allow_full'],
+        );
+    }
+
+    /**
+     * Apply lightbox markup to HTML.
+     */
+    private function process_html( $html, $post_id, $settings ) {
         if ( false === strpos( $html, '<img' ) ) {
             return $html;
         }
@@ -103,66 +189,57 @@ class Andw_Lightbox_Frontend {
             }
 
             $attachment_id = andw_lightbox_extract_attachment_id_from_img( $img );
-
             if ( ! $attachment_id || ! wp_attachment_is_image( $attachment_id ) ) {
                 continue;
             }
 
-            $profile = $this->media_meta->get_attachment_settings( $attachment_id );
-
-            if ( empty( $profile['enabled'] ) ) {
-                continue;
-            }
-
-            $allow_full = $this->settings->is_enabled_flag( 'allow_full' );
-            $href       = andw_lightbox_select_target_image_src( $attachment_id, $profile['size'], $allow_full );
-
+            $href = andw_lightbox_select_target_image_src( $attachment_id, $settings['size'], $settings['allow_full'] );
             if ( ! $href ) {
                 continue;
             }
 
             $anchor = $dom->createElement( 'a' );
-            $anchor->setAttribute( 'href', esc_url( $href ) );
+            $anchor->setAttribute( 'href', esc_url_raw( $href ) );
             $anchor->setAttribute( 'class', 'andw-lightbox-link glightbox' );
             $anchor->setAttribute( 'data-andw-lightbox', '1' );
 
-            if ( ! empty( $profile['slide'] ) ) {
-                $anchor->setAttribute( 'data-gallery', andw_lightbox_build_gallery_id( $post_id, $profile['gallery'] ) );
+            if ( $settings['slide'] ) {
+                $anchor->setAttribute( 'data-gallery', andw_lightbox_build_gallery_id( $post_id, $settings['gallery'] ) );
             }
 
-            if ( ! empty( $profile['animation'] ) ) {
-                $anchor->setAttribute( 'data-andw-animation', $profile['animation'] );
+            if ( $settings['animation'] ) {
+                $anchor->setAttribute( 'data-andw-animation', $settings['animation'] );
             }
 
-            if ( ! empty( $profile['hover'] ) && 'none' !== $profile['hover'] ) {
-                $anchor->setAttribute( 'data-andw-hover', $profile['hover'] );
-                $anchor->setAttribute( 'style', '--andw-hover-strength:' . andw_lightbox_strength_to_css_value( $profile['hover_strength'] ) . ';' );
+            if ( 'none' !== $settings['hover'] ) {
+                $anchor->setAttribute( 'data-andw-hover', $settings['hover'] );
+                $anchor->setAttribute( 'style', '--andw-hover-strength:' . andw_lightbox_strength_to_css_value( $settings['hover_strength'] ) . ';' );
             }
 
-            $title       = $profile['title'];
-            $description = $profile['description'];
-
+            $title = $settings['title'];
             if ( '' === $title ) {
                 $title = get_the_title( $attachment_id );
             }
 
+            $description = $settings['description'];
             if ( '' === $description ) {
                 $description = wp_get_attachment_caption( $attachment_id );
             }
 
-            if ( $title ) {
-                $anchor->setAttribute( 'data-title', esc_attr( $title ) );
+            $title_attr = sanitize_text_field( $title );
+            if ( '' !== $title_attr ) {
+                $anchor->setAttribute( 'data-title', $title_attr );
             }
 
-            if ( $description ) {
-                $anchor->setAttribute( 'data-description', esc_attr( $description ) );
+            $description_attr = sanitize_textarea_field( $description );
+            if ( '' !== $description_attr ) {
+                $anchor->setAttribute( 'data-description', $description_attr );
             }
 
             $alt       = $img->hasAttribute( 'alt' ) ? $img->getAttribute( 'alt' ) : '';
-            $aria_text = andw_lightbox_prepare_aria_label( $title, $alt );
-
+            $aria_text = andw_lightbox_prepare_aria_label( $title_attr, $alt );
             if ( $aria_text ) {
-                $anchor->setAttribute( 'aria-label', esc_attr( $aria_text ) );
+                $anchor->setAttribute( 'aria-label', sanitize_text_field( $aria_text ) );
             }
 
             $img->setAttribute( 'class', trim( $img->getAttribute( 'class' ) . ' andw-lightbox-image' ) );
