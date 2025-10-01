@@ -1,0 +1,40 @@
+.andw-lightbox-link {
+    position: relative;
+    display: inline-block;
+    text-decoration: none;
+    --andw-hover-strength: 0;
+}
+
+.andw-lightbox-link:focus-visible {
+    outline: 2px solid var(--wp-admin-theme-color, #007cba);
+    outline-offset: 2px;
+}
+
+.andw-lightbox-link img {
+    display: block;
+    height: auto;
+    transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+.andw-lightbox-link[data-andw-hover="darken"]:hover img,
+.andw-lightbox-link[data-andw-hover="darken"]:focus img {
+    filter: brightness(calc(1 - var(--andw-hover-strength)));
+}
+
+.andw-lightbox-link[data-andw-hover="lighten"]:hover img,
+.andw-lightbox-link[data-andw-hover="lighten"]:focus img {
+    filter: brightness(calc(1 + var(--andw-hover-strength)));
+}
+
+.andw-lightbox-link[data-andw-hover="transparent"]:hover img,
+.andw-lightbox-link[data-andw-hover="transparent"]:focus img {
+    opacity: calc(1 - var(--andw-hover-strength));
+}
+
+.andw-lightbox-link[data-andw-hover="none"] img {
+    transition: none;
+}
+
+body.andw-glightbox-open {
+    overflow: hidden;
+}

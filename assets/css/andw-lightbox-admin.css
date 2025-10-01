@@ -1,0 +1,26 @@
+.compat-field-andw_lightbox_enabled label,
+.compat-field-andw_lightbox_slide label,
+.compat-field-andw_lightbox_gallery label,
+.compat-field-andw_lightbox_animation label,
+.compat-field-andw_lightbox_hover label,
+.compat-field-andw_lightbox_hover_strength label,
+.compat-field-andw_lightbox_size label,
+.compat-field-andw_lightbox_title label,
+.compat-field-andw_lightbox_description label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.compat-field-andw_lightbox_gallery select,
+.compat-field-andw_lightbox_animation select,
+.compat-field-andw_lightbox_hover select,
+.compat-field-andw_lightbox_size select,
+.compat-field-andw_lightbox_title input,
+.compat-field-andw_lightbox_description textarea {
+    width: 100%;
+}
+
+.compat-field-andw_lightbox_description textarea {
+    min-height: 120px;
+}
