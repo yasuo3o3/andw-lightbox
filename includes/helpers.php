@@ -82,7 +82,7 @@ if ( ! function_exists( 'andw_lightbox_get_animation_options' ) ) {
     function andw_lightbox_get_animation_options() {
         return array(
             'zoom' => __( 'ズーム（ふわっと拡大）', 'andw-lightbox' ),
-            'fade' => __( 'フェード（フェードイン）', 'andw-lightbox' ),
+            'fade' => __( 'フェード（さっと表示）', 'andw-lightbox' ),
             'none' => __( 'なし（瞬間表示）', 'andw-lightbox' ),
         );
     }
