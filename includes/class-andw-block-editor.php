@@ -99,6 +99,14 @@ class Andw_Lightbox_Block_Editor {
                 'type'    => 'number',
                 'default' => $defaults['andwLightboxHoverStrength'],
             ),
+            'andwLightboxTransform'     => array(
+                'type'    => 'string',
+                'default' => $defaults['andwLightboxTransform'],
+            ),
+            'andwLightboxTransformStrength' => array(
+                'type'    => 'number',
+                'default' => $defaults['andwLightboxTransformStrength'],
+            ),
             'andwLightboxSize'          => array(
                 'type'    => 'string',
                 'default' => $defaults['andwLightboxSize'],
@@ -130,6 +138,8 @@ class Andw_Lightbox_Block_Editor {
             'andwLightboxAnimation'     => sanitize_key( $animation ),
             'andwLightboxHover'         => sanitize_key( $this->settings->get( 'default_hover' ) ),
             'andwLightboxHoverStrength' => intval( $this->settings->get( 'default_hover_strength' ) ),
+            'andwLightboxTransform'     => sanitize_key( $this->settings->get( 'default_transform' ) ),
+            'andwLightboxTransformStrength' => intval( $this->settings->get( 'default_transform_strength' ) ),
             'andwLightboxSize'          => sanitize_key( $this->settings->get( 'default_size' ) ),
             'andwLightboxTitle'         => '',
             'andwLightboxDescription'   => '',
@@ -154,6 +164,7 @@ class Andw_Lightbox_Block_Editor {
                     array( 'value' => 'slide', 'label' => __( 'スライド', 'andw-lightbox' ) ),
                 ),
                 'hover'     => $this->format_choices( andw_lightbox_get_hover_options() ),
+                'transform' => $this->format_choices( andw_lightbox_get_transform_options() ),
                 'size'      => $this->format_choices( andw_lightbox_get_registered_size_choices() ),
             ),
             'labels'          => array(
@@ -164,12 +175,18 @@ class Andw_Lightbox_Block_Editor {
                 'animation'     => __( 'スライドアニメーション', 'andw-lightbox' ),
                 'hover'         => __( 'ホバー効果', 'andw-lightbox' ),
                 'hoverStrength' => __( 'ホバー強度', 'andw-lightbox' ),
+                'transform'     => __( 'ホバートランスフォーム', 'andw-lightbox' ),
+                'transformStrength' => __( 'トランスフォーム強度', 'andw-lightbox' ),
                 'size'          => __( '拡大画像サイズ', 'andw-lightbox' ),
                 'title'         => __( 'タイトル', 'andw-lightbox' ),
                 'description'   => __( '説明文', 'andw-lightbox' ),
             ),
             'range'           => array(
                 'hoverStrength' => array(
+                    'min' => 0,
+                    'max' => 100,
+                ),
+                'transformStrength' => array(
                     'min' => 0,
                     'max' => 100,
                 ),
