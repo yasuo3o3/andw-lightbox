@@ -24,6 +24,21 @@
         instances = [];
     }
 
+    function resolveSlideEffect(effect) {
+        var allowed = ['slide', 'fade', 'zoom', 'none'];
+
+        if (allowed.indexOf(effect) !== -1) {
+            return effect;
+        }
+
+        var fallback = settings.defaultAnimation;
+        if (allowed.indexOf(fallback) === -1) {
+            fallback = 'slide';
+        }
+
+        return fallback;
+    }
+
     function selectorFor(effect) {
         switch (effect) {
             case 'fade':
@@ -40,20 +55,17 @@
     }
 
     function getOptions(effect, selector) {
+        var resolvedEffect = resolveSlideEffect(effect);
         var opts = {
             selector: selector,
             touchNavigation: true,
-            loop: false
+            loop: false,
+            slideEffect: resolvedEffect
         };
 
-        if ('none' === effect) {
-            opts.slideEffect = 'slide';
+        if (resolvedEffect === 'none') {
             opts.openEffect = 'none';
             opts.closeEffect = 'none';
-        } else if ('fade' === effect || 'zoom' === effect || 'slide' === effect) {
-            opts.slideEffect = effect;
-        } else {
-            opts.slideEffect = settings.defaultAnimation || 'slide';
         }
 
         return opts;
@@ -73,6 +85,7 @@
             if (!document.querySelector(selector)) {
                 return;
             }
+
             var instance = window.GLightbox(getOptions(effect, selector));
             if (instance) {
                 instances.push(instance);
