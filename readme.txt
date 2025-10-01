@@ -15,7 +15,7 @@ andW Lightbox is a GLightbox-based solution that enhances core Image, Gallery, a
 The plugin automatically wraps your images with GLightbox links on the frontend while keeping the markup clean in the editor. Configure global defaults, override per attachment, and choose between CDN or bundled assets for GLightbox delivery.
 
 * Automatic lightbox wrappers for core Image, Gallery, and Media & Text blocks
-* Attachment sidebar controls for gallery slot, animation, hover effect, and captions
+* Block editor inspector controls for gallery slot, animation, hover effect, and captions
 * Global defaults covering hover strength, grouped galleries, and infinite scroll support
 * Fallback GLightbox implementation bundled for offline environments
 
@@ -23,7 +23,7 @@ The plugin automatically wraps your images with GLightbox links on the frontend 
 1. Upload the `andw-lightbox` directory to `/wp-content/plugins/`.
 2. Activate the plugin through the **Plugins** menu in WordPress.
 3. Open **Settings → andW Lightbox** to adjust global defaults if needed.
-4. Edit individual images in the Media Library to override lightbox behaviour per attachment.
+4. In the block editor, use the inspector panel on supported blocks to override per-image lightbox behaviour.
 
 == Frequently Asked Questions ==
 
@@ -36,4 +36,6 @@ Switch the asset source to "同梱ファイル" under **Settings → andW Lightb
 == Changelog ==
 
 = 0.1.0 =
-* Initial release with GLightbox integration, attachment metadata controls, and CDN fallback.
+* Initial release with GLightbox integration, block inspector controls, and CDN fallback.
+
+

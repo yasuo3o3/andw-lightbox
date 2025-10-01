@@ -22,7 +22,6 @@ require_once ANDW_LIGHTBOX_PLUGIN_DIR . 'includes/helpers.php';
 require_once ANDW_LIGHTBOX_PLUGIN_DIR . 'includes/class-andw-settings.php';
 require_once ANDW_LIGHTBOX_PLUGIN_DIR . 'includes/class-andw-assets.php';
 require_once ANDW_LIGHTBOX_PLUGIN_DIR . 'includes/class-andw-admin.php';
-require_once ANDW_LIGHTBOX_PLUGIN_DIR . 'includes/class-andw-media-meta.php';
 require_once ANDW_LIGHTBOX_PLUGIN_DIR . 'includes/class-andw-block-editor.php';
 require_once ANDW_LIGHTBOX_PLUGIN_DIR . 'includes/class-andw-frontend.php';
 
@@ -56,9 +55,6 @@ final class Andw_Lightbox_Plugin {
     /** @var Andw_Lightbox_Admin */
     private $admin;
 
-    /** @var Andw_Lightbox_Media_Meta */
-    private $media_meta;
-
     /** @var Andw_Lightbox_Block_Editor */
     private $block_editor;
 
@@ -69,7 +65,6 @@ final class Andw_Lightbox_Plugin {
         $this->settings     = Andw_Lightbox_Settings::get_instance();
         $this->assets       = new Andw_Lightbox_Assets( $this->settings );
         $this->admin        = new Andw_Lightbox_Admin( $this->settings );
-        $this->media_meta   = new Andw_Lightbox_Media_Meta( $this->settings );
         $this->block_editor = new Andw_Lightbox_Block_Editor( $this->settings );
         $this->frontend     = new Andw_Lightbox_Frontend( $this->settings, $this->assets );
 
