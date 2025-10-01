@@ -112,8 +112,13 @@ class Andw_Lightbox_Assets {
 
         $this->localized = true;
 
+        $animation = $this->settings->get( 'default_animation' );
+        if ( 'default' === $animation ) {
+            $animation = 'slide';
+        }
+
         $data = array(
-            'defaultAnimation' => $this->settings->get( 'default_animation' ),
+            'defaultAnimation' => $animation,
             'observer'         => $this->settings->is_enabled_flag( 'infinite_scroll' ),
             'hover'            => array(
                 'effect'   => $this->settings->get( 'default_hover' ),
