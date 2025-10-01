@@ -1,5 +1,5 @@
 === andW Lightbox ===
-Contributors: netservice
+Contributors: yasuo3o3
 Tags: lightbox, gallery, media, images
 Requires at least: 6.0
 Tested up to: 6.8
