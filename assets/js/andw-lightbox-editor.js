@@ -28,9 +28,11 @@
     var galleryOptions = Array.isArray( options.gallery ) ? options.gallery : [];
     var animationOptions = Array.isArray( options.animation ) ? options.animation : [];
     var hoverOptions = Array.isArray( options.hover ) ? options.hover : [];
+    var transformOptions = Array.isArray( options.transform ) ? options.transform : [];
     var sizeOptions = Array.isArray( options.size ) ? options.size : [];
 
     var hoverRange = ranges.hoverStrength || { min: 0, max: 100 };
+    var transformRange = ranges.transformStrength || { min: 0, max: 100 };
 
     if ( addFilter && wp.blocks ) {
         addFilter( 'blocks.registerBlockType', 'andw-lightbox/attributes', function ( settings, name ) {
@@ -97,6 +99,8 @@
             var currentAnimation = getAttributeValue( attributes, 'andwLightboxAnimation' ) || defaults.andwLightboxAnimation;
             var currentHover = getAttributeValue( attributes, 'andwLightboxHover' ) || defaults.andwLightboxHover;
             var currentHoverStrength = sanitizeNumber( getAttributeValue( attributes, 'andwLightboxHoverStrength' ), defaults.andwLightboxHoverStrength );
+            var currentTransform = getAttributeValue( attributes, 'andwLightboxTransform' ) || defaults.andwLightboxTransform;
+            var currentTransformStrength = sanitizeNumber( getAttributeValue( attributes, 'andwLightboxTransformStrength' ), defaults.andwLightboxTransformStrength );
             var currentSize = getAttributeValue( attributes, 'andwLightboxSize' ) || defaults.andwLightboxSize;
             var currentTitle = getAttributeValue( attributes, 'andwLightboxTitle' ) || '';
             var currentDescription = getAttributeValue( attributes, 'andwLightboxDescription' ) || '';
@@ -152,6 +156,23 @@
                     max: hoverRange.max,
                     onChange: function ( value ) {
                         setAttributes( { andwLightboxHoverStrength: sanitizeNumber( value, defaults.andwLightboxHoverStrength ) } );
+                    },
+                } ),
+                wp.element.createElement( SelectControl, {
+                    label: labels.transform || 'ホバートランスフォーム',
+                    value: currentTransform,
+                    options: transformOptions,
+                    onChange: function ( value ) {
+                        setAttributes( { andwLightboxTransform: value } );
+                    },
+                } ),
+                wp.element.createElement( RangeControl, {
+                    label: labels.transformStrength || 'トランスフォーム強度',
+                    value: currentTransformStrength,
+                    min: transformRange.min,
+                    max: transformRange.max,
+                    onChange: function ( value ) {
+                        setAttributes( { andwLightboxTransformStrength: sanitizeNumber( value, defaults.andwLightboxTransformStrength ) } );
                     },
                 } ),
                 wp.element.createElement( SelectControl, {
