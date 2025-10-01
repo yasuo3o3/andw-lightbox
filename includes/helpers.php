@@ -81,11 +81,9 @@ if ( ! function_exists( 'andw_lightbox_get_gallery_options' ) ) {
 if ( ! function_exists( 'andw_lightbox_get_animation_options' ) ) {
     function andw_lightbox_get_animation_options() {
         return array(
-            'default' => __( 'デフォルト', 'andw-lightbox' ),
-            'none'    => __( 'なし', 'andw-lightbox' ),
-            'fade'    => __( 'フェード', 'andw-lightbox' ),
-            'zoom'    => __( 'ズーム', 'andw-lightbox' ),
-            'slide'   => __( 'スライド', 'andw-lightbox' ),
+            'zoom' => __( 'ズーム（ふわっと拡大）', 'andw-lightbox' ),
+            'fade' => __( 'フェード（フェードイン）', 'andw-lightbox' ),
+            'none' => __( 'なし（瞬間表示）', 'andw-lightbox' ),
         );
     }
 }

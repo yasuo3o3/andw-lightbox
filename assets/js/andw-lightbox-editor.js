@@ -134,7 +134,7 @@
                     },
                 } ),
                 wp.element.createElement( SelectControl, {
-                    label: labels.animation || 'スライドアニメーション',
+                    label: labels.animation || '開閉アニメーション',
                     value: currentAnimation,
                     options: animationOptions,
                     onChange: function ( value ) {
@@ -159,7 +159,7 @@
                     },
                 } ),
                 wp.element.createElement( SelectControl, {
-                    label: labels.transform || 'ホバートランスフォーム',
+                    label: labels.transform || 'トランスフォーム',
                     value: currentTransform,
                     options: transformOptions,
                     onChange: function ( value ) {

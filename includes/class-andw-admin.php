@@ -47,10 +47,10 @@ class Andw_Lightbox_Admin {
         add_settings_field( 'enabled', __( 'ライトボックスの既定状態', 'andw-lightbox' ), array( $this, 'field_enabled' ), 'andw-lightbox', 'andw_lightbox_general' );
         add_settings_field( 'default_slide', __( 'スライド表示', 'andw-lightbox' ), array( $this, 'field_default_slide' ), 'andw-lightbox', 'andw_lightbox_general' );
         add_settings_field( 'default_gallery', __( '既定ギャラリー', 'andw-lightbox' ), array( $this, 'field_default_gallery' ), 'andw-lightbox', 'andw_lightbox_general' );
-        add_settings_field( 'default_animation', __( 'スライドアニメーション', 'andw-lightbox' ), array( $this, 'field_default_animation' ), 'andw-lightbox', 'andw_lightbox_general' );
+        add_settings_field( 'default_animation', __( '開閉アニメーション', 'andw-lightbox' ), array( $this, 'field_default_animation' ), 'andw-lightbox', 'andw_lightbox_general' );
         add_settings_field( 'default_hover', __( 'ホバー効果', 'andw-lightbox' ), array( $this, 'field_default_hover' ), 'andw-lightbox', 'andw_lightbox_general' );
         add_settings_field( 'default_hover_strength', __( 'ホバー強度', 'andw-lightbox' ), array( $this, 'field_default_hover_strength' ), 'andw-lightbox', 'andw_lightbox_general' );
-        add_settings_field( 'default_transform', __( 'ホバートランスフォーム', 'andw-lightbox' ), array( $this, 'field_default_transform' ), 'andw-lightbox', 'andw_lightbox_general' );
+        add_settings_field( 'default_transform', __( 'トランスフォーム', 'andw-lightbox' ), array( $this, 'field_default_transform' ), 'andw-lightbox', 'andw_lightbox_general' );
         add_settings_field( 'default_transform_strength', __( 'トランスフォーム強度', 'andw-lightbox' ), array( $this, 'field_default_transform_strength' ), 'andw-lightbox', 'andw_lightbox_general' );
         add_settings_field( 'default_size', __( '拡大画像サイズ', 'andw-lightbox' ), array( $this, 'field_default_size' ), 'andw-lightbox', 'andw_lightbox_general' );
         add_settings_field( 'allow_full', __( 'フルサイズ許可', 'andw-lightbox' ), array( $this, 'field_allow_full' ), 'andw-lightbox', 'andw_lightbox_general' );
