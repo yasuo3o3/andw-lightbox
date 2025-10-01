@@ -12,11 +12,15 @@
 
 .andw-lightbox-link[data-andw-transform="slide"] {
     overflow: hidden;
+    position: relative;
+    display: block;
 }
 
 .andw-lightbox-link[data-andw-transform="slide"] img {
     width: 110%;
+    height: auto;
     transform: translateX(-5%);
+    display: block;
 }
 
 .andw-lightbox-link:focus-visible {
