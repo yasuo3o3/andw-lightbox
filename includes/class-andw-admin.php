@@ -103,15 +103,12 @@ class Andw_Lightbox_Admin {
         return $this->settings->get_option_name();
     }
 
-    private function is_checked( $key ) {
-        return checked( $this->settings->is_enabled_flag( $key ), true, false );
-    }
 
     public function field_enabled() {
         printf(
             '<label><input type="checkbox" name="%1$s[enabled]" value="1" %2$s> %3$s</label><p class="description">%4$s</p>',
             esc_attr( $this->option_name() ),
-            $this->is_checked( 'enabled' ),
+            checked( $this->settings->is_enabled_flag( 'enabled' ), true, false ),
             esc_html__( 'フロントエンドでライトボックスを既定で有効化', 'andw-lightbox' ),
             esc_html__( '添付ファイルのメタ情報で個別に無効化できます。', 'andw-lightbox' )
         );
@@ -121,7 +118,7 @@ class Andw_Lightbox_Admin {
         printf(
             '<label><input type="checkbox" name="%1$s[default_slide]" value="1" %2$s> %3$s</label><p class="description">%4$s</p>',
             esc_attr( $this->option_name() ),
-            $this->is_checked( 'default_slide' ),
+            checked( $this->settings->is_enabled_flag( 'default_slide' ), true, false ),
             esc_html__( '同一ギャラリー内でのスライド切り替えを許可', 'andw-lightbox' ),
             esc_html__( 'OFF にすると個別画像のみ表示します。', 'andw-lightbox' )
         );
@@ -179,9 +176,9 @@ class Andw_Lightbox_Admin {
     public function field_default_hover_strength() {
         $value = intval( $this->settings->get( 'default_hover_strength' ) );
         printf(
-            '<input type="number" min="0" max="100" step="1" name="%1$s[default_hover_strength]" value="%2$d" class="small-text"> <span class="description">%3$s</span>',
+            '<input type="number" min="0" max="100" step="1" name="%1$s[default_hover_strength]" value="%2$s" class="small-text"> <span class="description">%3$s</span>',
             esc_attr( $this->option_name() ),
-            $value,
+            esc_attr( $value ),
             esc_html__( '0〜100 の範囲でホバー強度を指定します。', 'andw-lightbox' )
         );
     }
@@ -206,7 +203,7 @@ class Andw_Lightbox_Admin {
         printf(
             '<label><input type="checkbox" name="%1$s[allow_full]" value="1" %2$s> %3$s</label>',
             esc_attr( $this->option_name() ),
-            $this->is_checked( 'allow_full' ),
+            checked( $this->settings->is_enabled_flag( 'allow_full' ), true, false ),
             esc_html__( '中間サイズが無い場合にフルサイズへフォールバックを許可', 'andw-lightbox' )
         );
     }
@@ -215,7 +212,7 @@ class Andw_Lightbox_Admin {
         printf(
             '<label><input type="checkbox" name="%1$s[infinite_scroll]" value="1" %2$s> %3$s</label><p class="description">%4$s</p>',
             esc_attr( $this->option_name() ),
-            $this->is_checked( 'infinite_scroll' ),
+            checked( $this->settings->is_enabled_flag( 'infinite_scroll' ), true, false ),
             esc_html__( 'MutationObserver を使用して無限スクロールで追加された要素を初期化', 'andw-lightbox' ),
             esc_html__( '大量の DOM 変更がある環境ではパフォーマンスへ影響する可能性があります。', 'andw-lightbox' )
         );
@@ -259,9 +256,9 @@ class Andw_Lightbox_Admin {
     public function field_default_transform_strength() {
         $value = intval( $this->settings->get( 'default_transform_strength' ) );
         printf(
-            '<input type="number" min="0" max="100" step="1" name="%1$s[default_transform_strength]" value="%2$d" class="small-text"> <span class="description">%3$s</span>',
+            '<input type="number" min="0" max="100" step="1" name="%1$s[default_transform_strength]" value="%2$s" class="small-text"> <span class="description">%3$s</span>',
             esc_attr( $this->option_name() ),
-            $value,
+            esc_attr( $value ),
             esc_html__( '0〜100 の範囲でトランスフォーム強度を指定します。', 'andw-lightbox' )
         );
     }
