@@ -6,6 +6,7 @@
     var observerEnabled = !!settings.observer;
     var observer = null;
     var refreshTimer = null;
+    var savedScrollPosition = 0;
 
     function ready(fn) {
         if (document.readyState === 'loading') {
@@ -70,7 +71,18 @@
             selector: selector,
             touchNavigation: true,
             loop: false,
-            slideEffect: resolvedEffect
+            slideEffect: resolvedEffect,
+            height: '80vh',
+            zoomable: true,
+            draggable: true,
+            onOpen: function() {
+                savedScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+            },
+            onClose: function() {
+                setTimeout(function() {
+                    window.scrollTo(0, savedScrollPosition);
+                }, 50);
+            }
         };
 
         // アニメーション効果を開閉効果にも適用
