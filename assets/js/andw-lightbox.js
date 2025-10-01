@@ -49,13 +49,23 @@
                 return '.glightbox[data-andw-animation="slide"]';
             case 'none':
                 return '.glightbox[data-andw-animation="none"]';
-            default:
+            case 'default':
                 return '.glightbox:not([data-andw-animation])';
+            default:
+                return null;
         }
     }
 
     function getOptions(effect, selector) {
-        var resolvedEffect = resolveSlideEffect(effect);
+        var resolvedEffect;
+
+        // デフォルト効果の場合は設定値を使用
+        if (effect === 'default') {
+            resolvedEffect = resolveSlideEffect(settings.defaultAnimation);
+        } else {
+            resolvedEffect = resolveSlideEffect(effect);
+        }
+
         var opts = {
             selector: selector,
             touchNavigation: true,
@@ -82,7 +92,7 @@
         var effects = ['default', 'fade', 'zoom', 'slide', 'none'];
         effects.forEach(function (effect) {
             var selector = selectorFor(effect);
-            if (!document.querySelector(selector)) {
+            if (!selector || !document.querySelector(selector)) {
                 return;
             }
 
