@@ -169,6 +169,10 @@ if ( ! function_exists( 'andw_lightbox_dom_has_parent_anchor' ) ) {
                 if ( $parent->hasAttribute( 'data-andw-lightbox' ) ) {
                     return true;
                 }
+
+                if ( $parent->hasAttribute( 'href' ) ) {
+                    return true;
+                }
             }
 
             $parent = $parent->parentNode;
