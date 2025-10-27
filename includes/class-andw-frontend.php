@@ -78,22 +78,7 @@ class Andw_Lightbox_Frontend {
     }
 
     public function filter_thumbnail( $html, $post_id, $post_thumbnail_id, $size, $attr ) {
-        if ( empty( $html ) || ! $this->should_process() ) {
-            return $html;
-        }
-
-        if ( false !== strpos( $html, '<a ' ) ) {
-            error_log( 'andW Lightbox: Skipping thumbnail processing due to existing link - Post ID: ' . $post_id );
-            return $html;
-        }
-
-        $settings = $this->normalize_block_settings( array() );
-        if ( ! $settings['enabled'] ) {
-            return $html;
-        }
-
-        error_log( 'andW Lightbox: Processing thumbnail - Post ID: ' . $post_id );
-        return $this->process_html( $html, $post_id, $settings );
+        return $html;
     }
 
     private function should_process() {
