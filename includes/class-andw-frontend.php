@@ -83,6 +83,7 @@ class Andw_Lightbox_Frontend {
         }
 
         if ( false !== strpos( $html, '<a ' ) ) {
+            error_log( 'andW Lightbox: Skipping thumbnail processing due to existing link - Post ID: ' . $post_id );
             return $html;
         }
 
@@ -91,6 +92,7 @@ class Andw_Lightbox_Frontend {
             return $html;
         }
 
+        error_log( 'andW Lightbox: Processing thumbnail - Post ID: ' . $post_id );
         return $this->process_html( $html, $post_id, $settings );
     }
 
@@ -201,6 +203,11 @@ class Andw_Lightbox_Frontend {
             return $html;
         }
 
+        if ( $this->has_broken_link_structure( $html ) ) {
+            error_log( 'andW Lightbox: Broken link structure detected, skipping processing - Post ID: ' . $post_id );
+            return $html;
+        }
+
         $post_id = absint( $post_id );
         $updated = false;
 
@@ -303,5 +310,12 @@ class Andw_Lightbox_Frontend {
         $this->assets->mark_front_needed();
 
         return $output;
+    }
+
+    /**
+     * Check for broken link structure (empty link + lightbox link).
+     */
+    private function has_broken_link_structure( $html ) {
+        return preg_match( '/<a[^>]*><\/a>\s*<a[^>]*class="[^"]*andw-lightbox-link[^"]*"/', $html );
     }
 }
