@@ -2,7 +2,7 @@
 /**
  * Plugin Name: andW Lightbox
  * Description: Accessible lightbox integration for WordPress media and core image blocks using GLightbox.
- * Version: 0.1.0
+ * Version: 0.1.1
  * Author: Netservice
  * Author URI: https://netservice.jp/
  * License: GPLv2 or later
