@@ -74,6 +74,10 @@ class Andw_Lightbox_Frontend {
             return $html;
         }
 
+        if ( false !== strpos( $html, '<a ' ) ) {
+            return $html;
+        }
+
         $settings = $this->normalize_block_settings( array() );
         if ( ! $settings['enabled'] ) {
             return $html;
