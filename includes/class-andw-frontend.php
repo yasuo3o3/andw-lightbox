@@ -46,6 +46,10 @@ class Andw_Lightbox_Frontend {
             return $block_content;
         }
 
+        if ( false !== strpos( $block_content, 'wp-block-post-featured-image' ) && false !== strpos( $block_content, '<a ' ) ) {
+            return $block_content;
+        }
+
         $attrs    = andw_lightbox_array_get( $block, 'attrs', array() );
         $settings = $this->normalize_block_settings( $attrs );
 
@@ -58,6 +62,10 @@ class Andw_Lightbox_Frontend {
 
     public function filter_content( $content ) {
         if ( ! $this->should_process() || empty( $content ) ) {
+            return $content;
+        }
+
+        if ( false !== strpos( $content, 'wp-block-post-featured-image' ) && false !== strpos( $content, '<a ' ) ) {
             return $content;
         }
 
