@@ -156,6 +156,26 @@ if ( ! function_exists( 'andw_lightbox_extract_attachment_id_from_img' ) ) {
     }
 }
 
+if ( ! function_exists( 'andw_lightbox_is_image_url' ) ) {
+    function andw_lightbox_is_image_url( $url ) {
+        if ( empty( $url ) ) {
+            return false;
+        }
+
+        $image_extensions = array( 'jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico' );
+        $parsed_url = wp_parse_url( $url );
+
+        if ( ! isset( $parsed_url['path'] ) ) {
+            return false;
+        }
+
+        $path_info = pathinfo( $parsed_url['path'] );
+        $extension = isset( $path_info['extension'] ) ? strtolower( $path_info['extension'] ) : '';
+
+        return in_array( $extension, $image_extensions, true );
+    }
+}
+
 if ( ! function_exists( 'andw_lightbox_dom_has_parent_anchor' ) ) {
     function andw_lightbox_dom_has_parent_anchor( DOMElement $img ) {
         $parent = $img->parentNode;
@@ -171,7 +191,11 @@ if ( ! function_exists( 'andw_lightbox_dom_has_parent_anchor' ) ) {
                 }
 
                 if ( $parent->hasAttribute( 'href' ) ) {
-                    return true;
+                    $href = $parent->getAttribute( 'href' );
+
+                    if ( ! andw_lightbox_is_image_url( $href ) ) {
+                        return true;
+                    }
                 }
             }
 
