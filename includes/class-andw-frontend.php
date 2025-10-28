@@ -189,7 +189,6 @@ class Andw_Lightbox_Frontend {
         }
 
         if ( $this->has_broken_link_structure( $html ) ) {
-            error_log( 'andW Lightbox: Broken link structure detected, skipping processing - Post ID: ' . $post_id );
             return $html;
         }
 
