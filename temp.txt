@@ -273,7 +273,7 @@ class Andw_Lightbox_Assets {
      * Output complete assets inline in footer.
      */
     private function output_fallback_assets() {
-        // 1. 必要なCSSファイルを順序通りに出力
+        // 必要なCSSファイルを順序通りに出力
         $css_urls = $this->get_required_css_urls();
         foreach ( $css_urls as $id => $url ) {
             if ( $url ) {
@@ -281,12 +281,7 @@ class Andw_Lightbox_Assets {
             }
         }
 
-        // 2. 設定の出力（JSファイル読み込み前に実行）
-        if ( ! $this->localized ) {
-            $this->output_inline_settings();
-        }
-
-        // 3. 必要なJSファイルを順序通りに出力
+        // 必要なJSファイルを順序通りに出力
         $js_urls = $this->get_required_js_urls();
         foreach ( $js_urls as $id => $url ) {
             if ( $url ) {
@@ -294,9 +289,26 @@ class Andw_Lightbox_Assets {
             }
         }
 
-        // 4. CDN利用時のフォールバック機能（設定適用後に実行）
+        // CDN利用時のフォールバック機能
         if ( 'cdn' === $this->settings->get( 'glightbox_source' ) ) {
-            $this->output_cdn_fallback_script();
+            $fallback_js = ANDW_LIGHTBOX_PLUGIN_URL . 'assets/js/glightbox-fallback.js';
+            $fallback_css = ANDW_LIGHTBOX_PLUGIN_URL . 'assets/css/glightbox-fallback.css';
+            echo '<script>' . "\n";
+            echo 'if (typeof window.GLightbox !== "function") {' . "\n";
+            echo '  var fallbackCSS = document.createElement("link");' . "\n";
+            echo '  fallbackCSS.rel = "stylesheet";' . "\n";
+            echo '  fallbackCSS.href = "' . esc_js( $fallback_css ) . '";' . "\n";
+            echo '  document.head.appendChild(fallbackCSS);' . "\n";
+            echo '  var fallbackJS = document.createElement("script");' . "\n";
+            echo '  fallbackJS.src = "' . esc_js( $fallback_js ) . '";' . "\n";
+            echo '  document.head.appendChild(fallbackJS);' . "\n";
+            echo '}' . "\n";
+            echo '</script>' . "\n";
+        }
+
+        // 設定の出力
+        if ( ! $this->localized ) {
+            $this->output_inline_settings();
         }
     }
 
@@ -367,35 +379,5 @@ class Andw_Lightbox_Assets {
 
         echo '<script>window.andwLightboxSettings = ' . wp_json_encode( $data ) . ';</script>' . "\n";
         $this->localized = true;
-    }
-
-    /**
-     * Output CDN fallback script with proper timing.
-     */
-    private function output_cdn_fallback_script() {
-        $fallback_js = ANDW_LIGHTBOX_PLUGIN_URL . 'assets/js/glightbox-fallback.js';
-        $fallback_css = ANDW_LIGHTBOX_PLUGIN_URL . 'assets/css/glightbox-fallback.css';
-
-        echo '<script>' . "\n";
-        echo 'window.addEventListener("load", function() {' . "\n";
-        echo '  if (typeof window.GLightbox !== "function") {' . "\n";
-        echo '    // フォールバックCSS読み込み' . "\n";
-        echo '    var fallbackCSS = document.createElement("link");' . "\n";
-        echo '    fallbackCSS.rel = "stylesheet";' . "\n";
-        echo '    fallbackCSS.href = "' . esc_js( $fallback_css ) . '";' . "\n";
-        echo '    document.head.appendChild(fallbackCSS);' . "\n";
-        echo '    // フォールバックJS読み込み' . "\n";
-        echo '    var fallbackJS = document.createElement("script");' . "\n";
-        echo '    fallbackJS.src = "' . esc_js( $fallback_js ) . '";' . "\n";
-        echo '    fallbackJS.onload = function() {' . "\n";
-        echo '      // 設定が既に定義されていることを前提に初期化' . "\n";
-        echo '      if (window.andwLightboxSettings && typeof window.GLightbox === "function") {' . "\n";
-        echo '        console.log("GLightbox fallback loaded successfully");' . "\n";
-        echo '      }' . "\n";
-        echo '    };' . "\n";
-        echo '    document.head.appendChild(fallbackJS);' . "\n";
-        echo '  }' . "\n";
-        echo '});' . "\n";
-        echo '</script>' . "\n";
     }
 }
