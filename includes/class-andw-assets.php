@@ -163,7 +163,7 @@ class Andw_Lightbox_Assets {
             wp_register_style( $glightbox_handle, $base . '/css/glightbox.min.css', array(), $version );
             wp_register_script( $glightbox_handle, $base . '/js/glightbox.min.js', array(), $version, true );
 
-            $fallback = 'window.addEventListener("load",function(){if("function"!==typeof window.GLightbox){var l=document.createElement("link");l.rel="stylesheet";l.href="' . esc_js( $local_css ) . '";document.head.appendChild(l);var s=document.createElement("script");s.src="' . esc_js( $local_js ) . '";s.onload=function(){if("function"===typeof window.GLightbox){var e=new CustomEvent("andwLightboxReady",{detail:{source:"cdn-inline-fallback"}});document.dispatchEvent(e);}};document.head.appendChild(s);}});';
+            $fallback = 'window.addEventListener("load",function(){if("function"!==typeof window.GLightbox){var dispatchReady=function(source){var evt;try{evt=new CustomEvent("andwLightboxReady",{detail:{source:source}});}catch(err){evt=document.createEvent("Event");evt.initEvent("andwLightboxReady",true,true);evt.detail={source:source};}document.dispatchEvent(evt);};var link=document.createElement("link");link.rel="stylesheet";link.href=' . wp_json_encode( $local_css ) . ';document.head.appendChild(link);var script=document.createElement("script");script.src=' . wp_json_encode( $local_js ) . ';script.onload=function(){if("function"===typeof window.GLightbox){dispatchReady("cdn-inline-fallback");}};document.head.appendChild(script);}});';
             wp_add_inline_script( $glightbox_handle, $fallback );
         } else {
             wp_register_style( $glightbox_handle, $local_css, array(), ANDW_LIGHTBOX_VERSION );
@@ -194,30 +194,7 @@ class Andw_Lightbox_Assets {
             return;
         }
 
-        wp_enqueue_style( 'andw-lightbox' );
-        wp_enqueue_script( 'andw-lightbox' );
-
-        if ( $this->localized ) {
-            return;
-        }
-
-        $this->localized = true;
-
-        $animation = $this->settings->get( 'default_animation' );
-        if ( 'default' === $animation ) {
-            $animation = 'slide';
-        }
-
-        $data = array(
-            'defaultAnimation' => $animation,
-            'observer'         => $this->settings->is_enabled_flag( 'infinite_scroll' ),
-            'hover'            => array(
-                'effect'   => $this->settings->get( 'default_hover' ),
-                'strength' => intval( $this->settings->get( 'default_hover_strength' ) ),
-            ),
-        );
-
-        wp_add_inline_script( 'andw-lightbox', 'window.andwLightboxSettings = ' . wp_json_encode( $data ) . ';', 'before' );
+        $this->ensure_front_assets_loaded();
     }
 
     /**
@@ -265,98 +242,54 @@ class Andw_Lightbox_Assets {
             $this->register_front_assets();
         }
 
-        // フッターでの遅延読み込み（インライン出力）
+        // Ensure styles and scripts are loaded even when detected late.
         $this->output_fallback_assets();
     }
 
     /**
-     * Output complete assets inline in footer.
+     * Ensure assets load when requirement is detected late in the request.
      */
     private function output_fallback_assets() {
-        // 1. 必要なCSSファイルを順序通りに出力
-        $css_urls = $this->get_required_css_urls();
-        foreach ( $css_urls as $id => $url ) {
-            if ( $url ) {
-                echo '<link rel="stylesheet" href="' . esc_url( $url ) . '" id="' . esc_attr( $id ) . '">' . "\n";
-            }
-        }
-
-        // 2. 設定の出力（JSファイル読み込み前に実行）
-        if ( ! $this->localized ) {
-            $this->output_inline_settings();
-        }
-
-        // 3. 必要なJSファイルを順序通りに出力
-        $js_urls = $this->get_required_js_urls();
-        foreach ( $js_urls as $id => $url ) {
-            if ( $url ) {
-                echo '<script src="' . esc_url( $url ) . '" id="' . esc_attr( $id ) . '"></script>' . "\n";
-            }
-        }
-
-        // 4. CDN利用時のフォールバック機能（設定適用後に実行）
-        if ( 'cdn' === $this->settings->get( 'glightbox_source' ) ) {
-            $this->output_cdn_fallback_script();
-        }
+        $this->ensure_front_assets_loaded();
     }
 
     /**
-     * Get required CSS URLs in proper order.
+     * Ensure frontend assets are enqueued and localized.
+     */
+    private function ensure_front_assets_loaded() {
+        if ( ! wp_style_is( 'andw-lightbox', 'enqueued' ) ) {
+            wp_enqueue_style( 'andw-lightbox' );
+        }
+
+        if ( ! wp_script_is( 'andw-lightbox', 'enqueued' ) ) {
+            wp_enqueue_script( 'andw-lightbox' );
+        }
+
+        if ( $this->localized ) {
+            return;
+        }
+
+        $this->localized = true;
+
+        wp_add_inline_script(
+            'andw-lightbox',
+            'window.andwLightboxSettings = ' . wp_json_encode( $this->get_frontend_settings() ) . ';',
+            'before'
+        );
+    }
+
+    /**
+     * Build localized settings for the frontend script.
      *
-     * @return array Array of CSS URLs with IDs as keys.
+     * @return array
      */
-    private function get_required_css_urls() {
-        $urls = array();
-
-        $source  = $this->settings->get( 'glightbox_source' );
-        $version = $this->settings->get( 'glightbox_version' );
-
-        // 1. GLightbox CSS (依存関係)
-        if ( 'cdn' === $source ) {
-            $base = sprintf( 'https://cdn.jsdelivr.net/npm/glightbox@%s/dist', rawurlencode( $version ) );
-            $urls['andw-lightbox-glightbox-css'] = $base . '/css/glightbox.min.css';
-        } else {
-            $urls['andw-lightbox-glightbox-css'] = ANDW_LIGHTBOX_PLUGIN_URL . 'assets/css/glightbox-fallback.css';
+    private function get_frontend_settings() {
+        $animation = $this->settings->get( 'default_animation' );
+        if ( 'default' === $animation ) {
+            $animation = 'slide';
         }
 
-        // 2. プラグイン固有CSS
-        $urls['andw-lightbox-css'] = ANDW_LIGHTBOX_PLUGIN_URL . 'assets/css/andw-lightbox.css';
-
-        return $urls;
-    }
-
-    /**
-     * Get required JS URLs in proper order.
-     *
-     * @return array Array of JS URLs with IDs as keys.
-     */
-    private function get_required_js_urls() {
-        $urls = array();
-
-        $source  = $this->settings->get( 'glightbox_source' );
-        $version = $this->settings->get( 'glightbox_version' );
-
-        // 1. GLightbox JS (依存関係)
-        if ( 'cdn' === $source ) {
-            $base = sprintf( 'https://cdn.jsdelivr.net/npm/glightbox@%s/dist', rawurlencode( $version ) );
-            $urls['andw-lightbox-glightbox-js'] = $base . '/js/glightbox.min.js';
-        } else {
-            $urls['andw-lightbox-glightbox-js'] = ANDW_LIGHTBOX_PLUGIN_URL . 'assets/js/glightbox-fallback.js';
-        }
-
-        // 2. プラグイン固有JS
-        $urls['andw-lightbox-js'] = ANDW_LIGHTBOX_PLUGIN_URL . 'assets/js/andw-lightbox.js';
-
-        return $urls;
-    }
-
-    /**
-     * Output inline settings for fallback.
-     */
-    private function output_inline_settings() {
-        $animation = sanitize_key( $this->settings->get( 'default_animation' ) );
-
-        $data = array(
+        return array(
             'defaultAnimation' => $animation,
             'observer'         => $this->settings->is_enabled_flag( 'infinite_scroll' ),
             'hover'            => array(
@@ -364,43 +297,6 @@ class Andw_Lightbox_Assets {
                 'strength' => intval( $this->settings->get( 'default_hover_strength' ) ),
             ),
         );
-
-        echo '<script>window.andwLightboxSettings = ' . wp_json_encode( $data ) . ';</script>' . "\n";
-        $this->localized = true;
-    }
-
-    /**
-     * Output CDN fallback script with proper timing.
-     */
-    private function output_cdn_fallback_script() {
-        $fallback_js = ANDW_LIGHTBOX_PLUGIN_URL . 'assets/js/glightbox-fallback.js';
-        $fallback_css = ANDW_LIGHTBOX_PLUGIN_URL . 'assets/css/glightbox-fallback.css';
-
-        echo '<script>' . "\n";
-        echo 'window.addEventListener("load", function() {' . "\n";
-        echo '  if (typeof window.GLightbox !== "function") {' . "\n";
-        echo '    // フォールバックCSS読み込み' . "\n";
-        echo '    var fallbackCSS = document.createElement("link");' . "\n";
-        echo '    fallbackCSS.rel = "stylesheet";' . "\n";
-        echo '    fallbackCSS.href = "' . esc_js( $fallback_css ) . '";' . "\n";
-        echo '    document.head.appendChild(fallbackCSS);' . "\n";
-        echo '    // フォールバックJS読み込み' . "\n";
-        echo '    var fallbackJS = document.createElement("script");' . "\n";
-        echo '    fallbackJS.src = "' . esc_js( $fallback_js ) . '";' . "\n";
-        echo '    fallbackJS.onload = function() {' . "\n";
-        echo '      // 設定が既に定義されていることを前提に初期化' . "\n";
-        echo '      if (window.andwLightboxSettings && typeof window.GLightbox === "function") {' . "\n";
-        echo '        console.log("GLightbox fallback loaded successfully");' . "\n";
-        echo '        // カスタムイベント発火で再初期化をトリガ' . "\n";
-        echo '        var event = new CustomEvent("andwLightboxReady", {' . "\n";
-        echo '          detail: { source: "cdn-fallback" }' . "\n";
-        echo '        });' . "\n";
-        echo '        document.dispatchEvent(event);' . "\n";
-        echo '      }' . "\n";
-        echo '    };' . "\n";
-        echo '    document.head.appendChild(fallbackJS);' . "\n";
-        echo '  }' . "\n";
-        echo '});' . "\n";
-        echo '</script>' . "\n";
     }
 }
+
