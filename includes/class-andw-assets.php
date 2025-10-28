@@ -234,30 +234,6 @@ class Andw_Lightbox_Assets {
         }
     }
 
-    /**
-     * Enqueue assets after wp_enqueue_scripts has already run.
-     * This is a fallback for when assets are needed dynamically.
-     */
-    private function enqueue_assets_late() {
-        // まず assets が register されているか確認
-        if ( ! wp_style_is( 'andw-lightbox', 'registered' ) ) {
-            $this->register_front_assets();
-        }
-
-        // enqueue されていなければ enqueue
-        if ( ! wp_style_is( 'andw-lightbox', 'enqueued' ) ) {
-            wp_enqueue_style( 'andw-lightbox' );
-        }
-
-        if ( ! wp_script_is( 'andw-lightbox', 'enqueued' ) ) {
-            wp_enqueue_script( 'andw-lightbox' );
-        }
-
-        // localization を実行
-        if ( ! $this->localized ) {
-            $this->localize_front_script();
-        }
-    }
 
     /**
      * Setup safe late enqueue using wp_footer hook.
@@ -294,19 +270,40 @@ class Andw_Lightbox_Assets {
     }
 
     /**
-     * Output fallback assets inline in footer.
+     * Output complete assets inline in footer.
      */
     private function output_fallback_assets() {
-        // CSS をインライン出力
-        $css_url = $this->get_fallback_css_url();
-        if ( $css_url ) {
-            echo '<link rel="stylesheet" href="' . esc_url( $css_url ) . '" id="andw-lightbox-fallback-css">' . "\n";
+        // 必要なCSSファイルを順序通りに出力
+        $css_urls = $this->get_required_css_urls();
+        foreach ( $css_urls as $id => $url ) {
+            if ( $url ) {
+                echo '<link rel="stylesheet" href="' . esc_url( $url ) . '" id="' . esc_attr( $id ) . '">' . "\n";
+            }
         }
 
-        // JS をインライン出力
-        $js_url = $this->get_fallback_js_url();
-        if ( $js_url ) {
-            echo '<script src="' . esc_url( $js_url ) . '" id="andw-lightbox-fallback-js"></script>' . "\n";
+        // 必要なJSファイルを順序通りに出力
+        $js_urls = $this->get_required_js_urls();
+        foreach ( $js_urls as $id => $url ) {
+            if ( $url ) {
+                echo '<script src="' . esc_url( $url ) . '" id="' . esc_attr( $id ) . '"></script>' . "\n";
+            }
+        }
+
+        // CDN利用時のフォールバック機能
+        if ( 'cdn' === $this->settings->get( 'glightbox_source' ) ) {
+            $fallback_js = ANDW_LIGHTBOX_PLUGIN_URL . 'assets/js/glightbox-fallback.js';
+            $fallback_css = ANDW_LIGHTBOX_PLUGIN_URL . 'assets/css/glightbox-fallback.css';
+            echo '<script>' . "\n";
+            echo 'if (typeof window.GLightbox !== "function") {' . "\n";
+            echo '  var fallbackCSS = document.createElement("link");' . "\n";
+            echo '  fallbackCSS.rel = "stylesheet";' . "\n";
+            echo '  fallbackCSS.href = "' . esc_js( $fallback_css ) . '";' . "\n";
+            echo '  document.head.appendChild(fallbackCSS);' . "\n";
+            echo '  var fallbackJS = document.createElement("script");' . "\n";
+            echo '  fallbackJS.src = "' . esc_js( $fallback_js ) . '";' . "\n";
+            echo '  document.head.appendChild(fallbackJS);' . "\n";
+            echo '}' . "\n";
+            echo '</script>' . "\n";
         }
 
         // 設定の出力
@@ -316,17 +313,53 @@ class Andw_Lightbox_Assets {
     }
 
     /**
-     * Get fallback CSS URL.
+     * Get required CSS URLs in proper order.
+     *
+     * @return array Array of CSS URLs with IDs as keys.
      */
-    private function get_fallback_css_url() {
-        return ANDW_LIGHTBOX_PLUGIN_URL . 'assets/css/glightbox-fallback.css';
+    private function get_required_css_urls() {
+        $urls = array();
+
+        $source  = $this->settings->get( 'glightbox_source' );
+        $version = $this->settings->get( 'glightbox_version' );
+
+        // 1. GLightbox CSS (依存関係)
+        if ( 'cdn' === $source ) {
+            $base = sprintf( 'https://cdn.jsdelivr.net/npm/glightbox@%s/dist', rawurlencode( $version ) );
+            $urls['andw-lightbox-glightbox-css'] = $base . '/css/glightbox.min.css';
+        } else {
+            $urls['andw-lightbox-glightbox-css'] = ANDW_LIGHTBOX_PLUGIN_URL . 'assets/css/glightbox-fallback.css';
+        }
+
+        // 2. プラグイン固有CSS
+        $urls['andw-lightbox-css'] = ANDW_LIGHTBOX_PLUGIN_URL . 'assets/css/andw-lightbox.css';
+
+        return $urls;
     }
 
     /**
-     * Get fallback JS URL.
+     * Get required JS URLs in proper order.
+     *
+     * @return array Array of JS URLs with IDs as keys.
      */
-    private function get_fallback_js_url() {
-        return ANDW_LIGHTBOX_PLUGIN_URL . 'assets/js/glightbox-fallback.js';
+    private function get_required_js_urls() {
+        $urls = array();
+
+        $source  = $this->settings->get( 'glightbox_source' );
+        $version = $this->settings->get( 'glightbox_version' );
+
+        // 1. GLightbox JS (依存関係)
+        if ( 'cdn' === $source ) {
+            $base = sprintf( 'https://cdn.jsdelivr.net/npm/glightbox@%s/dist', rawurlencode( $version ) );
+            $urls['andw-lightbox-glightbox-js'] = $base . '/js/glightbox.min.js';
+        } else {
+            $urls['andw-lightbox-glightbox-js'] = ANDW_LIGHTBOX_PLUGIN_URL . 'assets/js/glightbox-fallback.js';
+        }
+
+        // 2. プラグイン固有JS
+        $urls['andw-lightbox-js'] = ANDW_LIGHTBOX_PLUGIN_URL . 'assets/js/andw-lightbox.js';
+
+        return $urls;
     }
 
     /**
