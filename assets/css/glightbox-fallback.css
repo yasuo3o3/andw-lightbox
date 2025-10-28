@@ -64,8 +64,8 @@
     transition: background 0.2s ease, opacity 0.2s ease;
 }
 
-.andw-glightbox-prev { left: -60px; }
-.andw-glightbox-next { right: -60px; }
+.andw-glightbox-prev { left: 16px; }
+.andw-glightbox-next { right: 16px; }
 
 .andw-glightbox-prev:disabled,
 .andw-glightbox-next:disabled {
