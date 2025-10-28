@@ -205,6 +205,7 @@ class Andw_Lightbox_Frontend {
         for ( $i = $images->length - 1; $i >= 0; $i-- ) {
             $img = $images->item( $i );
 
+            // 既存アンカーの保護チェック
             if ( andw_lightbox_dom_has_parent_anchor( $img ) ) {
                 continue;
             }
@@ -219,35 +220,83 @@ class Andw_Lightbox_Frontend {
                 continue;
             }
 
+            // 親アンカーの再利用チェック
+            $parent_anchor = andw_lightbox_dom_get_parent_anchor( $img );
+            if ( $parent_anchor ) {
+                // 既存の親アンカーにライトボックス属性を追加
+                $this->configure_anchor_for_lightbox( $parent_anchor, $href, $settings, $post_id, $attachment_id );
+                continue;
+            }
+
+            // 新規アンカーの作成
             $anchor = $dom->createElement( 'a' );
-            $anchor->setAttribute( 'href', esc_url_raw( $href ) );
-            $anchor->setAttribute( 'class', 'andw-lightbox-link glightbox' );
-            $anchor->setAttribute( 'data-andw-lightbox', '1' );
+            $this->configure_anchor_for_lightbox( $anchor, $href, $settings, $post_id, $attachment_id );
 
-            if ( $settings['slide'] ) {
-                $anchor->setAttribute( 'data-gallery', andw_lightbox_build_gallery_id( $post_id, $settings['gallery'] ) );
-            }
+            // 画像を新しいアンカーでラップ
+            $parent = $img->parentNode;
+            $parent->insertBefore( $anchor, $img );
+            $anchor->appendChild( $img );
 
-            if ( $settings['animation'] ) {
-                $anchor->setAttribute( 'data-andw-animation', $settings['animation'] );
-            }
+            // 画像にクラスを追加
+            $img->setAttribute( 'class', trim( $img->getAttribute( 'class' ) . ' andw-lightbox-image' ) );
 
-            $style_parts = array();
+            $updated = true;
+        }
 
-            if ( 'none' !== $settings['hover'] ) {
-                $anchor->setAttribute( 'data-andw-hover', $settings['hover'] );
-                $style_parts[] = '--andw-hover-strength:' . andw_lightbox_strength_to_css_value( $settings['hover_strength'] );
-            }
+        if ( ! $updated ) {
+            return $html;
+        }
 
-            if ( 'none' !== $settings['transform'] ) {
-                $anchor->setAttribute( 'data-andw-transform', $settings['transform'] );
-                $style_parts[] = '--andw-transform-strength:' . andw_lightbox_strength_to_css_value( $settings['transform_strength'] );
-            }
+        $output = '';
+        foreach ( $dom->documentElement->childNodes as $child ) {
+            $output .= $dom->saveHTML( $child );
+        }
 
-            if ( ! empty( $style_parts ) ) {
-                $anchor->setAttribute( 'style', implode( ';', $style_parts ) . ';' );
-            }
+        $this->assets->mark_front_needed();
 
+        return $output;
+    }
+
+    /**
+     * Configure anchor element for lightbox functionality.
+     *
+     * @param DOMElement $anchor The anchor element to configure.
+     * @param string     $href The href URL.
+     * @param array      $settings Lightbox settings.
+     * @param int        $post_id Post ID.
+     * @param int        $attachment_id Attachment ID for metadata.
+     */
+    private function configure_anchor_for_lightbox( DOMElement $anchor, $href, $settings, $post_id, $attachment_id = 0 ) {
+        $anchor->setAttribute( 'href', esc_url_raw( $href ) );
+        $anchor->setAttribute( 'class', trim( $anchor->getAttribute( 'class' ) . ' andw-lightbox-link glightbox' ) );
+        $anchor->setAttribute( 'data-andw-lightbox', '1' );
+
+        if ( $settings['slide'] ) {
+            $anchor->setAttribute( 'data-gallery', andw_lightbox_build_gallery_id( $post_id, $settings['gallery'] ) );
+        }
+
+        if ( $settings['animation'] ) {
+            $anchor->setAttribute( 'data-andw-animation', $settings['animation'] );
+        }
+
+        $style_parts = array();
+
+        if ( 'none' !== $settings['hover'] ) {
+            $anchor->setAttribute( 'data-andw-hover', $settings['hover'] );
+            $style_parts[] = '--andw-hover-strength:' . andw_lightbox_strength_to_css_value( $settings['hover_strength'] );
+        }
+
+        if ( 'none' !== $settings['transform'] ) {
+            $anchor->setAttribute( 'data-andw-transform', $settings['transform'] );
+            $style_parts[] = '--andw-transform-strength:' . andw_lightbox_strength_to_css_value( $settings['transform_strength'] );
+        }
+
+        if ( ! empty( $style_parts ) ) {
+            $anchor->setAttribute( 'style', implode( ';', $style_parts ) . ';' );
+        }
+
+        // メタデータ設定（attachment_idがある場合のみ）
+        if ( $attachment_id ) {
             $title = $settings['title'];
             if ( '' === $title ) {
                 $title = get_the_title( $attachment_id );
@@ -268,32 +317,17 @@ class Andw_Lightbox_Frontend {
                 $anchor->setAttribute( 'data-description', $description_attr );
             }
 
-            $alt       = $img->hasAttribute( 'alt' ) ? $img->getAttribute( 'alt' ) : '';
-            $aria_text = andw_lightbox_prepare_aria_label( $title_attr, $alt );
-            if ( $aria_text ) {
-                $anchor->setAttribute( 'aria-label', sanitize_text_field( $aria_text ) );
+            // aria-label設定（画像のaltも考慮）
+            $img_elements = $anchor->getElementsByTagName( 'img' );
+            if ( $img_elements->length > 0 ) {
+                $img = $img_elements->item( 0 );
+                $alt = $img->hasAttribute( 'alt' ) ? $img->getAttribute( 'alt' ) : '';
+                $aria_text = andw_lightbox_prepare_aria_label( $title_attr, $alt );
+                if ( $aria_text ) {
+                    $anchor->setAttribute( 'aria-label', sanitize_text_field( $aria_text ) );
+                }
             }
-
-            $img->setAttribute( 'class', trim( $img->getAttribute( 'class' ) . ' andw-lightbox-image' ) );
-
-            $anchor->appendChild( $img->cloneNode( true ) );
-            $img->parentNode->replaceChild( $anchor, $img );
-
-            $updated = true;
         }
-
-        if ( ! $updated ) {
-            return $html;
-        }
-
-        $output = '';
-        foreach ( $dom->documentElement->childNodes as $child ) {
-            $output .= $dom->saveHTML( $child );
-        }
-
-        $this->assets->mark_front_needed();
-
-        return $output;
     }
 
     /**

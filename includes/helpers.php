@@ -182,6 +182,7 @@ if ( ! function_exists( 'andw_lightbox_dom_has_parent_anchor' ) ) {
 
         while ( $parent instanceof DOMElement ) {
             if ( 'a' === strtolower( $parent->nodeName ) ) {
+                // 既にライトボックス化済みのアンカー
                 if ( $parent->hasAttribute( 'class' ) && false !== strpos( $parent->getAttribute( 'class' ), 'glightbox' ) ) {
                     return true;
                 }
@@ -191,8 +192,15 @@ if ( ! function_exists( 'andw_lightbox_dom_has_parent_anchor' ) ) {
                 }
 
                 if ( $parent->hasAttribute( 'href' ) ) {
-                    // 親にアンカーが存在する場合は、画像URLでも既存リンクとして扱う
-                    return true;
+                    $href = $parent->getAttribute( 'href' );
+
+                    // 非画像URLへのリンクは既存リンクとして保護
+                    if ( ! andw_lightbox_is_image_url( $href ) ) {
+                        return true;
+                    }
+
+                    // 画像URLへのリンクは再利用可能として false を返す
+                    // （後続処理で親アンカーを再利用してライトボックス化）
                 }
             }
 
@@ -200,6 +208,33 @@ if ( ! function_exists( 'andw_lightbox_dom_has_parent_anchor' ) ) {
         }
 
         return false;
+    }
+}
+
+if ( ! function_exists( 'andw_lightbox_dom_get_parent_anchor' ) ) {
+    /**
+     * Get parent anchor element if it exists and links to an image.
+     *
+     * @param DOMElement $img The image element.
+     * @return DOMElement|null The parent anchor element, or null if not found.
+     */
+    function andw_lightbox_dom_get_parent_anchor( DOMElement $img ) {
+        $parent = $img->parentNode;
+
+        while ( $parent instanceof DOMElement ) {
+            if ( 'a' === strtolower( $parent->nodeName ) && $parent->hasAttribute( 'href' ) ) {
+                $href = $parent->getAttribute( 'href' );
+
+                // 画像URLへのリンクのみを対象とする
+                if ( andw_lightbox_is_image_url( $href ) ) {
+                    return $parent;
+                }
+            }
+
+            $parent = $parent->parentNode;
+        }
+
+        return null;
     }
 }
 

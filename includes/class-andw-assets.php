@@ -48,6 +48,11 @@ class Andw_Lightbox_Assets {
      */
     public function mark_front_needed() {
         $this->front_required = true;
+
+        // wp_enqueue_scripts後に呼ばれた場合は遅延読み込みを試行
+        if ( did_action( 'wp_enqueue_scripts' ) && ! did_action( 'wp_footer' ) ) {
+            $this->enqueue_assets_late();
+        }
     }
 
     /**
@@ -75,6 +80,12 @@ class Andw_Lightbox_Assets {
         // クラシックエディターコンテンツをチェック
         if ( false !== strpos( $post->post_content, '<img' ) ) {
             $this->front_required = true;
+            return;
+        }
+
+        // ショートコード系をチェック
+        if ( $this->has_image_generating_shortcodes( $post->post_content ) ) {
+            $this->front_required = true;
         }
     }
 
@@ -94,6 +105,28 @@ class Andw_Lightbox_Assets {
                 if ( $this->has_supported_blocks_with_images( $block['innerBlocks'] ) ) {
                     return true;
                 }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if content contains shortcodes that generate images.
+     *
+     * @param string $content Post content.
+     * @return bool
+     */
+    private function has_image_generating_shortcodes( $content ) {
+        $image_shortcodes = array(
+            'gallery',
+            'wp_caption',
+            'caption',
+        );
+
+        foreach ( $image_shortcodes as $shortcode ) {
+            if ( has_shortcode( $content, $shortcode ) ) {
+                return true;
             }
         }
 
@@ -191,6 +224,31 @@ class Andw_Lightbox_Assets {
                 array(),
                 ANDW_LIGHTBOX_VERSION
             );
+        }
+    }
+
+    /**
+     * Enqueue assets after wp_enqueue_scripts has already run.
+     * This is a fallback for when assets are needed dynamically.
+     */
+    private function enqueue_assets_late() {
+        // まず assets が register されているか確認
+        if ( ! wp_style_is( 'andw-lightbox', 'registered' ) ) {
+            $this->register_front_assets();
+        }
+
+        // enqueue されていなければ enqueue
+        if ( ! wp_style_is( 'andw-lightbox', 'enqueued' ) ) {
+            wp_enqueue_style( 'andw-lightbox' );
+        }
+
+        if ( ! wp_script_is( 'andw-lightbox', 'enqueued' ) ) {
+            wp_enqueue_script( 'andw-lightbox' );
+        }
+
+        // localization を実行
+        if ( ! $this->localized ) {
+            $this->localize_front_script();
         }
     }
 }
