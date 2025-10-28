@@ -182,12 +182,8 @@ if ( ! function_exists( 'andw_lightbox_dom_has_parent_anchor' ) ) {
 
         while ( $parent instanceof DOMElement ) {
             if ( 'a' === strtolower( $parent->nodeName ) ) {
-                // 既にライトボックス化済みのアンカー
-                if ( $parent->hasAttribute( 'class' ) && false !== strpos( $parent->getAttribute( 'class' ), 'glightbox' ) ) {
-                    return true;
-                }
-
-                if ( $parent->hasAttribute( 'data-andw-lightbox' ) ) {
+                // 確実なライトボックス属性チェック
+                if ( andw_lightbox_is_lightbox_anchor( $parent ) ) {
                     return true;
                 }
 
@@ -205,6 +201,44 @@ if ( ! function_exists( 'andw_lightbox_dom_has_parent_anchor' ) ) {
             }
 
             $parent = $parent->parentNode;
+        }
+
+        return false;
+    }
+}
+
+if ( ! function_exists( 'andw_lightbox_is_lightbox_anchor' ) ) {
+    /**
+     * Check if anchor element is already configured for lightbox.
+     *
+     * @param DOMElement $anchor The anchor element to check.
+     * @return bool True if already lightbox-enabled.
+     */
+    function andw_lightbox_is_lightbox_anchor( DOMElement $anchor ) {
+        // data-andw-lightbox 属性チェック
+        if ( $anchor->hasAttribute( 'data-andw-lightbox' ) ) {
+            return true;
+        }
+
+        // glightbox クラスのチェック（単語境界を考慮）
+        if ( $anchor->hasAttribute( 'class' ) ) {
+            $classes = explode( ' ', $anchor->getAttribute( 'class' ) );
+            if ( in_array( 'glightbox', $classes, true ) ) {
+                return true;
+            }
+        }
+
+        // andw-lightbox-link クラスのチェック
+        if ( $anchor->hasAttribute( 'class' ) ) {
+            $classes = explode( ' ', $anchor->getAttribute( 'class' ) );
+            if ( in_array( 'andw-lightbox-link', $classes, true ) ) {
+                return true;
+            }
+        }
+
+        // data-gallery 属性チェック（GLightbox特有）
+        if ( $anchor->hasAttribute( 'data-gallery' ) ) {
+            return true;
         }
 
         return false;

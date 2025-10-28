@@ -205,6 +205,11 @@ class Andw_Lightbox_Frontend {
         for ( $i = $images->length - 1; $i >= 0; $i-- ) {
             $img = $images->item( $i );
 
+            // 処理済みマーカーチェック
+            if ( $img->hasAttribute( 'class' ) && false !== strpos( $img->getAttribute( 'class' ), 'andw-lightbox-processed' ) ) {
+                continue;
+            }
+
             // 既存アンカーの保護チェック
             if ( andw_lightbox_dom_has_parent_anchor( $img ) ) {
                 continue;
@@ -225,6 +230,8 @@ class Andw_Lightbox_Frontend {
             if ( $parent_anchor ) {
                 // 既存の親アンカーにライトボックス属性を追加
                 $this->configure_anchor_for_lightbox( $parent_anchor, $href, $settings, $post_id, $attachment_id );
+                // 画像に処理済みマーカーを付与
+                $this->mark_image_as_processed( $img );
                 continue;
             }
 
@@ -239,6 +246,9 @@ class Andw_Lightbox_Frontend {
 
             // 画像にクラスを追加
             $img->setAttribute( 'class', trim( $img->getAttribute( 'class' ) . ' andw-lightbox-image' ) );
+
+            // 画像に処理済みマーカーを付与
+            $this->mark_image_as_processed( $img );
 
             $updated = true;
         }
@@ -328,6 +338,16 @@ class Andw_Lightbox_Frontend {
                 }
             }
         }
+    }
+
+    /**
+     * Mark image as processed to prevent duplicate processing.
+     *
+     * @param DOMElement $img The image element to mark.
+     */
+    private function mark_image_as_processed( DOMElement $img ) {
+        $current_class = $img->hasAttribute( 'class' ) ? $img->getAttribute( 'class' ) : '';
+        $img->setAttribute( 'class', trim( $current_class . ' andw-lightbox-processed' ) );
     }
 
     /**

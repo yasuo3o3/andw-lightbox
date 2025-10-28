@@ -34,6 +34,13 @@ class Andw_Lightbox_Assets {
      */
     private static $registered = false;
 
+    /**
+     * Track late enqueue setup.
+     *
+     * @var bool
+     */
+    private $late_enqueue_setup = false;
+
     public function __construct( Andw_Lightbox_Settings $settings ) {
         $this->settings = $settings;
 
@@ -49,9 +56,9 @@ class Andw_Lightbox_Assets {
     public function mark_front_needed() {
         $this->front_required = true;
 
-        // wp_enqueue_scripts後に呼ばれた場合は遅延読み込みを試行
+        // wp_enqueue_scripts後に呼ばれた場合は安全な遅延読み込みを設定
         if ( did_action( 'wp_enqueue_scripts' ) && ! did_action( 'wp_footer' ) ) {
-            $this->enqueue_assets_late();
+            $this->setup_safe_late_enqueue();
         }
     }
 
@@ -250,5 +257,94 @@ class Andw_Lightbox_Assets {
         if ( ! $this->localized ) {
             $this->localize_front_script();
         }
+    }
+
+    /**
+     * Setup safe late enqueue using wp_footer hook.
+     * This prevents dependency issues by using proper timing.
+     */
+    private function setup_safe_late_enqueue() {
+        // 一度だけ実行
+        if ( $this->late_enqueue_setup ) {
+            return;
+        }
+
+        $this->late_enqueue_setup = true;
+
+        // wp_footer フックで安全に遅延読み込み
+        add_action( 'wp_footer', array( $this, 'safe_late_enqueue' ), 5 );
+    }
+
+    /**
+     * Safely enqueue assets in footer if needed.
+     */
+    public function safe_late_enqueue() {
+        // 既にenqueueされていれば何もしない
+        if ( wp_style_is( 'andw-lightbox', 'enqueued' ) && wp_script_is( 'andw-lightbox', 'enqueued' ) ) {
+            return;
+        }
+
+        // まず assets が register されているか確認
+        if ( ! wp_style_is( 'andw-lightbox', 'registered' ) ) {
+            $this->register_front_assets();
+        }
+
+        // フッターでの遅延読み込み（インライン出力）
+        $this->output_fallback_assets();
+    }
+
+    /**
+     * Output fallback assets inline in footer.
+     */
+    private function output_fallback_assets() {
+        // CSS をインライン出力
+        $css_url = $this->get_fallback_css_url();
+        if ( $css_url ) {
+            echo '<link rel="stylesheet" href="' . esc_url( $css_url ) . '" id="andw-lightbox-fallback-css">' . "\n";
+        }
+
+        // JS をインライン出力
+        $js_url = $this->get_fallback_js_url();
+        if ( $js_url ) {
+            echo '<script src="' . esc_url( $js_url ) . '" id="andw-lightbox-fallback-js"></script>' . "\n";
+        }
+
+        // 設定の出力
+        if ( ! $this->localized ) {
+            $this->output_inline_settings();
+        }
+    }
+
+    /**
+     * Get fallback CSS URL.
+     */
+    private function get_fallback_css_url() {
+        return ANDW_LIGHTBOX_PLUGIN_URL . 'assets/css/glightbox-fallback.css';
+    }
+
+    /**
+     * Get fallback JS URL.
+     */
+    private function get_fallback_js_url() {
+        return ANDW_LIGHTBOX_PLUGIN_URL . 'assets/js/glightbox-fallback.js';
+    }
+
+    /**
+     * Output inline settings for fallback.
+     */
+    private function output_inline_settings() {
+        $animation = sanitize_key( $this->settings->get( 'default_animation' ) );
+
+        $data = array(
+            'defaultAnimation' => $animation,
+            'observer'         => $this->settings->is_enabled_flag( 'infinite_scroll' ),
+            'hover'            => array(
+                'effect'   => $this->settings->get( 'default_hover' ),
+                'strength' => intval( $this->settings->get( 'default_hover_strength' ) ),
+            ),
+        );
+
+        echo '<script>window.andwLightboxSettings = ' . wp_json_encode( $data ) . ';</script>' . "\n";
+        $this->localized = true;
     }
 }
