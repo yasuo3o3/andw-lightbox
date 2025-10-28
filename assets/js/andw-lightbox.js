@@ -114,6 +114,25 @@
         return opts;
     }
 
+    function applySlideAnimation(slide, animation) {
+        if (!slide || !slide.container) {
+            return;
+        }
+
+        var container = slide.container;
+        var effectClasses = ['andw-glightbox-effect-fade', 'andw-glightbox-effect-zoom', 'andw-glightbox-effect-slide', 'andw-glightbox-effect-none'];
+
+        // 既存エフェクトクラスをクリア
+        effectClasses.forEach(function(cls) {
+            container.classList.remove(cls);
+        });
+
+        // 新しいアニメーションクラスを追加
+        if (animation && animation !== 'default') {
+            container.classList.add('andw-glightbox-effect-' + animation);
+        }
+    }
+
     function buildInstances() {
         if (typeof window.GLightbox !== 'function') {
             if (window.console && typeof window.console.warn === 'function') {
@@ -122,18 +141,34 @@
             return;
         }
 
-        var effects = ['default', 'fade', 'zoom', 'slide', 'none'];
-        effects.forEach(function (effect) {
-            var selector = selectorFor(effect);
-            if (!selector || !document.querySelector(selector)) {
-                return;
-            }
-
-            var instance = window.GLightbox(getOptions(effect, selector));
-            if (instance) {
-                instances.push(instance);
+        // 単一インスタンスで全ての.glightboxを管理
+        var instance = window.GLightbox({
+            selector: '.glightbox',
+            touchNavigation: true,
+            loop: false,
+            slideEffect: resolveSlideEffect(settings.defaultAnimation || 'slide'),
+            height: '80vh',
+            zoomable: true,
+            draggable: true,
+            onOpen: function() {
+                savedScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+            },
+            onClose: function() {
+                setTimeout(function() {
+                    window.scrollTo(0, savedScrollPosition);
+                }, 50);
+            },
+            onBeforeSlide: function(prev, current) {
+                if (current && current.trigger) {
+                    var animation = current.trigger.getAttribute('data-andw-animation') || settings.defaultAnimation || 'slide';
+                    applySlideAnimation(current, animation);
+                }
             }
         });
+
+        if (instance) {
+            instances.push(instance);
+        }
     }
 
     function init() {

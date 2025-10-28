@@ -207,6 +207,24 @@
         this.nextBtn.disabled = (this.activeIndex === this.collection.length - 1);
     };
 
+    LightboxInstance.prototype.applyAnimation = function(animation) {
+        if (!this.overlay) {
+            return;
+        }
+
+        var effectClasses = ['andw-glightbox-effect-fade', 'andw-glightbox-effect-zoom', 'andw-glightbox-effect-slide', 'andw-glightbox-effect-none'];
+
+        // 既存エフェクトクラスをクリア
+        for (var i = 0; i < effectClasses.length; i++) {
+            this.overlay.classList.remove(effectClasses[i]);
+        }
+
+        // 新しいエフェクトクラスを追加
+        if (animation && animation !== 'default') {
+            this.overlay.classList.add('andw-glightbox-effect-' + animation);
+        }
+    };
+
     LightboxInstance.prototype.renderItem = function (element) {
         if (!this.imageEl) {
             return;
@@ -216,7 +234,11 @@
         var title = element.getAttribute('data-title') || '';
         var description = element.getAttribute('data-description') || '';
         var aria = element.getAttribute('aria-label') || '';
+        var animation = element.getAttribute('data-andw-animation') || 'slide';
         var self = this;
+
+        // アニメーション動的切り替え
+        this.applyAnimation(animation);
 
         this.imageEl.classList.add('is-transitioning');
 
