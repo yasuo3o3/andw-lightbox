@@ -5,6 +5,23 @@ All notable changes to andW Lightbox will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2] - 2024-10-29
+
+### Changed
+- **Documentation**: Updated plugin documentation for WordPress.org submission
+- **Code Review**: Addressed security and coding standards review feedback
+- **Release Preparation**: Enhanced readme.txt, README.md, and development documentation
+
+### Added
+- **CHANGELOG.txt**: Comprehensive change history documentation
+- **DEVELOPER.md**: Development workflow and contribution guidelines
+- **Enhanced README.md**: Detailed project overview with English and Japanese sections
+
+### Improved
+- **WordPress.org Compliance**: Updated metadata and documentation for plugin directory submission
+- **Code Standards**: Verified WordPress Coding Standards compliance
+- **Security Review**: Confirmed proper sanitization, escaping, and permission handling
+
 ## [0.1.1] - 2024-10-29
 
 ### Fixed - Critical Issues
