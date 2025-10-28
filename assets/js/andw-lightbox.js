@@ -1,3 +1,13 @@
+/**
+ * andW Lightbox - WordPress GLightbox Integration
+ *
+ * This file integrates GLightbox library for WordPress
+ * GLightbox Copyright (c) 2018 Biati Digital (https://www.biati.digital)
+ * GLightbox is licensed under the MIT License
+ *
+ * @author Netservice
+ * @license GPLv2 or later
+ */
 (function (window, document) {
     'use strict';
 

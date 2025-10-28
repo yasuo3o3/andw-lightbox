@@ -113,6 +113,9 @@ This plugin is being prepared for submission to the official WordPress.org plugi
 
 GPLv2 or later. See [LICENSE](LICENSE) for details.
 
+This plugin integrates GLightbox which is licensed under the MIT License:
+Copyright (c) 2018 Biati Digital (https://www.biati.digital)
+
 ## Credits
 
 This plugin integrates [GLightbox](https://github.com/biati-digital/glightbox) by Biati Digital.
