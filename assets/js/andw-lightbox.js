@@ -165,6 +165,20 @@
         observer.observe(document.body, { childList: true, subtree: true });
     }
 
+    // GLightbox動的読み込み完了時の再初期化
+    document.addEventListener('andwLightboxReady', function(event) {
+        if (typeof window.console !== 'undefined' && typeof window.console.log === 'function') {
+            window.console.log('andW Lightbox: Re-initializing after GLightbox ready from ' + event.detail.source);
+        }
+        init();
+    });
+
+    // グローバルに再初期化関数を公開（デバッグ用）
+    window.andwLightboxReinit = function() {
+        init();
+        return 'andW Lightbox re-initialized';
+    };
+
     ready(function () {
         init();
         observe();

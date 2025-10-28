@@ -163,7 +163,7 @@ class Andw_Lightbox_Assets {
             wp_register_style( $glightbox_handle, $base . '/css/glightbox.min.css', array(), $version );
             wp_register_script( $glightbox_handle, $base . '/js/glightbox.min.js', array(), $version, true );
 
-            $fallback = 'window.addEventListener("load",function(){if("function"!==typeof window.GLightbox){var s=document.createElement("script");s.src="' . esc_js( $local_js ) . '";document.head.appendChild(s);var l=document.createElement("link");l.rel="stylesheet";l.href="' . esc_js( $local_css ) . '";document.head.appendChild(l);}});';
+            $fallback = 'window.addEventListener("load",function(){if("function"!==typeof window.GLightbox){var l=document.createElement("link");l.rel="stylesheet";l.href="' . esc_js( $local_css ) . '";document.head.appendChild(l);var s=document.createElement("script");s.src="' . esc_js( $local_js ) . '";s.onload=function(){if("function"===typeof window.GLightbox){var e=new CustomEvent("andwLightboxReady",{detail:{source:"cdn-inline-fallback"}});document.dispatchEvent(e);}};document.head.appendChild(s);}});';
             wp_add_inline_script( $glightbox_handle, $fallback );
         } else {
             wp_register_style( $glightbox_handle, $local_css, array(), ANDW_LIGHTBOX_VERSION );
@@ -391,6 +391,11 @@ class Andw_Lightbox_Assets {
         echo '      // 設定が既に定義されていることを前提に初期化' . "\n";
         echo '      if (window.andwLightboxSettings && typeof window.GLightbox === "function") {' . "\n";
         echo '        console.log("GLightbox fallback loaded successfully");' . "\n";
+        echo '        // カスタムイベント発火で再初期化をトリガ' . "\n";
+        echo '        var event = new CustomEvent("andwLightboxReady", {' . "\n";
+        echo '          detail: { source: "cdn-fallback" }' . "\n";
+        echo '        });' . "\n";
+        echo '        document.dispatchEvent(event);' . "\n";
         echo '      }' . "\n";
         echo '    };' . "\n";
         echo '    document.head.appendChild(fallbackJS);' . "\n";
