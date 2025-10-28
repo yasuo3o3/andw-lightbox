@@ -191,11 +191,8 @@ if ( ! function_exists( 'andw_lightbox_dom_has_parent_anchor' ) ) {
                 }
 
                 if ( $parent->hasAttribute( 'href' ) ) {
-                    $href = $parent->getAttribute( 'href' );
-
-                    if ( ! andw_lightbox_is_image_url( $href ) ) {
-                        return true;
-                    }
+                    // 親にアンカーが存在する場合は、画像URLでも既存リンクとして扱う
+                    return true;
                 }
             }
 

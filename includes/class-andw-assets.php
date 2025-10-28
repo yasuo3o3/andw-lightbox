@@ -38,6 +38,7 @@ class Andw_Lightbox_Assets {
         $this->settings = $settings;
 
         add_action( 'wp_enqueue_scripts', array( $this, 'register_front_assets' ), 5 );
+        add_action( 'wp', array( $this, 'check_if_front_assets_needed' ), 5 );
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_front_assets' ), 20 );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
     }
@@ -47,6 +48,56 @@ class Andw_Lightbox_Assets {
      */
     public function mark_front_needed() {
         $this->front_required = true;
+    }
+
+    /**
+     * Check if front assets are needed before wp_enqueue_scripts.
+     */
+    public function check_if_front_assets_needed() {
+        if ( is_admin() || ! is_singular() ) {
+            return;
+        }
+
+        global $post;
+        if ( ! $post ) {
+            return;
+        }
+
+        // コンテンツに画像が含まれているかチェック
+        if ( has_blocks( $post->post_content ) ) {
+            $blocks = parse_blocks( $post->post_content );
+            if ( $this->has_supported_blocks_with_images( $blocks ) ) {
+                $this->front_required = true;
+                return;
+            }
+        }
+
+        // クラシックエディターコンテンツをチェック
+        if ( false !== strpos( $post->post_content, '<img' ) ) {
+            $this->front_required = true;
+        }
+    }
+
+    /**
+     * Check if blocks contain supported blocks with images.
+     */
+    private function has_supported_blocks_with_images( $blocks ) {
+        $supported_blocks = array( 'core/image', 'core/gallery', 'core/media-text' );
+
+        foreach ( $blocks as $block ) {
+            if ( in_array( $block['blockName'], $supported_blocks, true ) ) {
+                return true;
+            }
+
+            // 入れ子ブロックもチェック
+            if ( ! empty( $block['innerBlocks'] ) ) {
+                if ( $this->has_supported_blocks_with_images( $block['innerBlocks'] ) ) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
