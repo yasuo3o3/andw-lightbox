@@ -2,7 +2,7 @@
 Contributors: yasuo3o3
 Tags: lightbox, gallery, media, images
 Requires at least: 6.0
-Tested up to: 6.8
+Tested up to: 6.7
 Requires PHP: 7.4
 Stable tag: 0.1.1
 License: GPLv2 or later
@@ -34,6 +34,13 @@ Yes. The plugin filters `the_content` to wrap classic editor images in addition 
 Switch the asset source to "同梱ファイル" under **Settings → andW Lightbox → アセット設定** to load the bundled fallback.
 
 == Changelog ==
+
+= 0.1.1 =
+* Improved asset enqueue timing for better performance
+* Fixed double-wrapping issues with existing image links
+* Enhanced CDN fallback re-initialization system
+* Optimized settings loading order for delayed asset loading
+* Better handling of dynamic content scenarios
 
 = 0.1.0 =
 * Initial release with GLightbox integration, block inspector controls, and CDN fallback.

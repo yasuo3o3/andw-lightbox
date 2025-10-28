@@ -1,0 +1,56 @@
+# Changelog
+
+All notable changes to andW Lightbox will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [0.1.1] - 2024-10-29
+
+### Fixed - Critical Issues
+- **Asset Enqueue Timing**: Resolved frontend assets not loading properly due to late content detection
+- **Double HTML Wrapping**: Fixed duplicate anchor wrapping around existing image links
+- **Settings Loading Order**: Corrected asset output sequence to ensure settings are available before JavaScript execution
+
+### Fixed - Major Issues
+- **CDN Fallback Re-initialization**: Implemented CustomEvent system for proper lightbox re-initialization after GLightbox loads dynamically
+- **Dynamic Content Handling**: Enhanced processing for content loaded after initial page render
+- **Parent Anchor Detection**: Improved logic to distinguish between protection-worthy and reusable anchor elements
+
+### Improved
+- **Early Content Analysis**: Added `wp` hook detection to identify lightbox requirements before asset enqueue
+- **Processed Marker System**: Implemented `andw-lightbox-processed` class to prevent duplicate processing
+- **Error Prevention**: Enhanced safe handling of edge cases in DOM manipulation
+- **Fallback Asset Loading**: Optimized CSS → settings → JS loading sequence for delayed scenarios
+
+### Technical Details
+- Added `check_if_front_assets_needed()` method for early content detection
+- Enhanced `mark_image_as_processed()` and parent anchor reuse logic
+- Implemented CustomEvent-based re-initialization with `andwLightboxReady` event
+- Added global debug function `window.andwLightboxReinit()` for troubleshooting
+
+## [0.1.0] - 2024-10-28
+
+### Added
+- Initial release with GLightbox integration
+- Block editor inspector controls for Image, Gallery, and Media & Text blocks
+- Global settings page with comprehensive configuration options
+- CDN delivery with automatic local fallback
+- Classic editor content processing via `the_content` filter
+- Accessibility-focused implementation
+- Smart asset loading based on content detection
+
+### Features
+- **Block Support**: Core Image, Gallery, and Media & Text blocks
+- **Global Settings**: Default animation, hover effects, gallery grouping, infinite scroll
+- **Asset Management**: Choose between CDN or bundled GLightbox delivery
+- **Performance Optimization**: Conditional asset loading only when needed
+- **Accessibility**: WCAG-compliant lightbox implementation
+- **Fallback System**: Automatic local asset delivery when CDN fails
+
+### Technical Implementation
+- WordPress Coding Standards compliance
+- Singleton pattern for settings management
+- Hook-based architecture for extensibility
+- Sanitization and validation for all user inputs
+- Proper escaping for security compliance
