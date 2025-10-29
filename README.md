@@ -56,6 +56,31 @@ Each supported block includes inspector controls for:
 - Hover effect overrides
 - Caption display options
 
+### CSS Customization
+
+You can customize the GLightbox description area appearance by adding CSS rules to target the following classes in your theme or via the plugin's CSS file (`assets/css/andw-lightbox.css`):
+
+```css
+/* GLightbox description area customization */
+.gslide-description {
+    /* Overall description container */
+}
+
+.gdesc-inner {
+    /* Inner description container */
+}
+
+.gslide-title {
+    /* Title element (h4) */
+}
+
+.gslide-desc {
+    /* Description text element (div) */
+}
+```
+
+These selectors are already included in the plugin's CSS file with comments for easy customization.
+
 ## Technical Details
 
 ### Supported Blocks
@@ -179,6 +204,31 @@ andW Lightbox は、WordPress のコアブロック（画像、ギャラリー�
 - アニメーション設定
 - ホバー効果のオーバーライド
 - キャプション表示オプション
+
+#### CSS カスタマイズ
+
+GLightboxの説明文エリアの外観をカスタマイズするには、テーマまたはプラグインのCSSファイル（`assets/css/andw-lightbox.css`）で以下のクラスをターゲットにしたCSSルールを追加できます：
+
+```css
+/* GLightbox 説明文エリアのカスタマイズ */
+.gslide-description {
+    /* 説明文全体のコンテナ */
+}
+
+.gdesc-inner {
+    /* 説明文内部コンテナ */
+}
+
+.gslide-title {
+    /* タイトル部分（h4要素） */
+}
+
+.gslide-desc {
+    /* 説明文テキスト部分（div要素） */
+}
+```
+
+これらのセレクタは、簡単にカスタマイズできるようにコメント付きでプラグインのCSSファイルに既に含まれています。
 
 ### 技術詳細
 
