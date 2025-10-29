@@ -313,19 +313,26 @@ class Andw_Lightbox_Assets {
     private function get_design_css() {
         $css_parts = array();
 
-        // サイズ制御
+        // サイズ制御（CDN版とローカル版両方に対応）
         $max_width = $this->settings->get( 'design_max_width' );
         $max_height = $this->settings->get( 'design_max_height' );
         if ( $max_width || $max_height ) {
-            $stage_css = '.andw-glightbox-stage { ';
+            $style_props = '';
             if ( $max_width ) {
-                $stage_css .= 'max-width: ' . esc_attr( $max_width ) . ' !important; ';
+                $style_props .= 'max-width: ' . esc_attr( $max_width ) . ' !important; ';
             }
             if ( $max_height ) {
-                $stage_css .= 'max-height: ' . esc_attr( $max_height ) . ' !important; ';
+                $style_props .= 'max-height: ' . esc_attr( $max_height ) . ' !important; ';
             }
-            $stage_css .= '}';
-            $css_parts[] = $stage_css;
+
+            // CDN版GLightbox用
+            $css_parts[] = '.glightbox-container { ' . $style_props . '}';
+            $css_parts[] = '.gcontainer { ' . $style_props . '}';
+            $css_parts[] = '.gslider { ' . $style_props . '}';
+            $css_parts[] = '.gslide { ' . $style_props . '}';
+
+            // ローカル版（フォールバック）用
+            $css_parts[] = '.andw-glightbox-stage { ' . $style_props . '}';
         }
 
         // オーバーレイ背景（CDN版 .goverlay と ローカル版 .andw-glightbox-backdrop 両方に対応）
