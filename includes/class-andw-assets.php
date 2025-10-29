@@ -325,10 +325,8 @@ class Andw_Lightbox_Assets {
                 $style_props .= 'max-height: ' . esc_attr( $max_height ) . ' !important; ';
             }
 
-            // CDN版GLightbox用（メディア・コンテンツ領域に限定）
+            // CDN版GLightbox用（ライトボックス全体サイズ制限）
             $css_parts[] = '.glightbox-container .gslide { ' . $style_props . '}';
-            $css_parts[] = '.glightbox-container .gslide-media { ' . $style_props . '}';
-            $css_parts[] = '.glightbox-container .gslide-content { ' . $style_props . '}';
 
             // ローカル版（フォールバック）用
             $css_parts[] = '.andw-glightbox-stage { ' . $style_props . '}';
