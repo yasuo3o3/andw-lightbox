@@ -47,7 +47,8 @@ class Andw_Lightbox_Admin {
         add_settings_field( 'enabled', __( 'ライトボックスの既定状態', 'andw-lightbox' ), array( $this, 'field_enabled' ), 'andw-lightbox', 'andw_lightbox_general' );
         add_settings_field( 'default_slide', __( 'スライド表示', 'andw-lightbox' ), array( $this, 'field_default_slide' ), 'andw-lightbox', 'andw_lightbox_general' );
         add_settings_field( 'default_gallery', __( '既定グループ', 'andw-lightbox' ), array( $this, 'field_default_gallery' ), 'andw-lightbox', 'andw_lightbox_general' );
-        add_settings_field( 'default_animation', __( '開閉アニメーション', 'andw-lightbox' ), array( $this, 'field_default_animation' ), 'andw-lightbox', 'andw_lightbox_general' );
+        add_settings_field( 'default_animation', __( '開閉エフェクト', 'andw-lightbox' ), array( $this, 'field_default_animation' ), 'andw-lightbox', 'andw_lightbox_general' );
+        add_settings_field( 'gallery_animation', __( 'ギャラリー切替アニメーション', 'andw-lightbox' ), array( $this, 'field_gallery_animation' ), 'andw-lightbox', 'andw_lightbox_general' );
         add_settings_field( 'default_hover', __( 'ホバー効果', 'andw-lightbox' ), array( $this, 'field_default_hover' ), 'andw-lightbox', 'andw_lightbox_general' );
         add_settings_field( 'default_hover_strength', __( 'ホバー強度', 'andw-lightbox' ), array( $this, 'field_default_hover_strength' ), 'andw-lightbox', 'andw_lightbox_general' );
         add_settings_field( 'default_transform', __( 'トランスフォーム', 'andw-lightbox' ), array( $this, 'field_default_transform' ), 'andw-lightbox', 'andw_lightbox_general' );
@@ -177,6 +178,21 @@ class Andw_Lightbox_Admin {
             echo '>' . esc_html( $label ) . '</option>';
         }
         echo '</select>';
+        echo '<p class="description">' . esc_html__( 'ライトボックスを開閉するときの演出を選択します。', 'andw-lightbox' ) . '</p>';
+    }
+
+    public function field_gallery_animation() {
+        $current = $this->settings->get( 'gallery_animation' );
+        $choices = andw_lightbox_get_gallery_animation_options();
+
+        echo '<select name="' . esc_attr( $this->option_name() ) . '[gallery_animation]">';
+        foreach ( $choices as $value => $label ) {
+            echo '<option value="' . esc_attr( $value ) . '" ';
+            selected( $value, $current );
+            echo '>' . esc_html( $label ) . '</option>';
+        }
+        echo '</select>';
+        echo '<p class="description">' . esc_html__( 'ギャラリー内で前後の画像へ移動する際の動きを選択します。', 'andw-lightbox' ) . '</p>';
     }
 
     public function field_default_hover() {

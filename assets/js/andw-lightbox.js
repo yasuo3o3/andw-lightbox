@@ -1,4 +1,4 @@
-/**
+﻿/**
  * andW Lightbox - WordPress GLightbox Integration
  *
  * This file integrates GLightbox library for WordPress
@@ -35,14 +35,14 @@
         instances = [];
     }
 
-    function resolveSlideEffect(effect) {
+    function resolveGalleryEffect(effect) {
         var allowed = ['slide', 'fade', 'zoom', 'none'];
 
         if (allowed.indexOf(effect) !== -1) {
             return effect;
         }
 
-        var fallback = settings.defaultAnimation;
+        var fallback = settings.galleryAnimation;
         if (allowed.indexOf(fallback) === -1) {
             fallback = 'slide';
         }
@@ -70,11 +70,17 @@
     function getOptions(effect, selector) {
         var resolvedEffect;
 
-        // デフォルト効果の場合は設定値を使用
+        // デフォルト指定の場合は設定値を使用
         if (effect === 'default') {
-            resolvedEffect = resolveSlideEffect(settings.defaultAnimation);
+            resolvedEffect = resolveGalleryEffect(settings.galleryAnimation);
         } else {
-            resolvedEffect = resolveSlideEffect(effect);
+            resolvedEffect = resolveGalleryEffect(effect);
+        }
+
+        var openEffect = settings.defaultAnimation;
+        var allowedOpen = ['zoom', 'fade', 'none'];
+        if (allowedOpen.indexOf(openEffect) === -1) {
+            openEffect = 'zoom';
         }
 
         var opts = {
@@ -95,25 +101,20 @@
             }
         };
 
-        // アニメーション効果を開閉効果にも適用
-        if (resolvedEffect === 'none') {
+        // 開閉エフェクトは別設定を使用
+        if (openEffect === 'none') {
             opts.openEffect = 'none';
             opts.closeEffect = 'none';
-        } else if (resolvedEffect === 'fade') {
+        } else if (openEffect === 'fade') {
             opts.openEffect = 'fade';
             opts.closeEffect = 'fade';
-        } else if (resolvedEffect === 'zoom') {
-            opts.openEffect = 'zoom';
-            opts.closeEffect = 'zoom';
         } else {
-            // slide または その他の場合はzoomを使用（GLightboxのデフォルト）
             opts.openEffect = 'zoom';
             opts.closeEffect = 'zoom';
         }
 
         return opts;
     }
-
     function applySlideAnimation(slide, animation) {
         if (!slide || !slide.container) {
             return;
@@ -142,11 +143,21 @@
         }
 
         // 単一インスタンスで全ての.glightboxを管理
+        var galleryEffect = resolveGalleryEffect(settings.galleryAnimation || 'slide');
+        var openEffect = settings.defaultAnimation;
+        var allowedOpen = ['zoom', 'fade', 'none'];
+        if (allowedOpen.indexOf(openEffect) === -1) {
+            openEffect = 'zoom';
+        }
+        var closeEffect = openEffect === 'none' ? 'none' : openEffect;
+
         var instance = window.GLightbox({
             selector: '.glightbox',
             touchNavigation: true,
             loop: false,
-            slideEffect: resolveSlideEffect(settings.defaultAnimation || 'slide'),
+            slideEffect: galleryEffect,
+            openEffect: openEffect,
+            closeEffect: closeEffect,
             height: '80vh',
             zoomable: true,
             draggable: true,
@@ -160,7 +171,8 @@
             },
             onBeforeSlide: function(prev, current) {
                 if (current && current.trigger) {
-                    var animation = current.trigger.getAttribute('data-andw-animation') || settings.defaultAnimation || 'slide';
+                    var animation = current.trigger.getAttribute('data-andw-animation') || settings.galleryAnimation || 'slide';
+                    animation = resolveGalleryEffect(animation);
                     applySlideAnimation(current, animation);
                 }
             }
@@ -230,3 +242,9 @@
     });
 
 })(window, document);
+
+
+
+
+
+

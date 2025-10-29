@@ -54,7 +54,8 @@ class Andw_Lightbox_Settings {
             'default_hover_strength' => '40',
             'default_transform'      => 'none',
             'default_transform_strength' => '40',
-            'default_animation'      => 'slide',
+            'default_animation'      => 'zoom',
+            'gallery_animation'      => 'slide',
             'default_size'           => 'default',
             'allow_full'             => '0',
             'infinite_scroll'        => '0',
@@ -146,6 +147,12 @@ class Andw_Lightbox_Settings {
             $sanitized['default_animation'] = andw_lightbox_sanitize_select( $input['default_animation'], andw_lightbox_get_animation_options() );
         } else {
             $sanitized['default_animation'] = isset( $existing_options['default_animation'] ) ? $existing_options['default_animation'] : $defaults['default_animation'];
+        }
+
+        if ( isset( $input['gallery_animation'] ) ) {
+            $sanitized['gallery_animation'] = andw_lightbox_sanitize_select( $input['gallery_animation'], andw_lightbox_get_gallery_animation_options() );
+        } else {
+            $sanitized['gallery_animation'] = isset( $existing_options['gallery_animation'] ) ? $existing_options['gallery_animation'] : $defaults['gallery_animation'];
         }
 
         if ( isset( $input['default_size'] ) ) {

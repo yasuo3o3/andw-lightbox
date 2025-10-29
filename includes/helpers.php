@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Utility helpers for andW Lightbox.
  */
@@ -81,9 +81,19 @@ if ( ! function_exists( 'andw_lightbox_get_gallery_options' ) ) {
 if ( ! function_exists( 'andw_lightbox_get_animation_options' ) ) {
     function andw_lightbox_get_animation_options() {
         return array(
-            'zoom' => __( 'ズーム（ふわっと拡大）', 'andw-lightbox' ),
-            'fade' => __( 'フェード（さっと表示）', 'andw-lightbox' ),
-            'none' => __( 'なし（瞬間表示）', 'andw-lightbox' ),
+            'zoom' => __( 'ズーム（開閉時に拡大）', 'andw-lightbox' ),
+            'fade' => __( 'フェード（開閉時に徐々に表示）', 'andw-lightbox' ),
+            'none' => __( 'なし（開閉エフェクトなし）', 'andw-lightbox' ),
+        );
+    }
+}
+
+if ( ! function_exists( 'andw_lightbox_get_gallery_animation_options' ) ) {
+    function andw_lightbox_get_gallery_animation_options() {
+        return array(
+            'slide' => __( 'スライド（左右に切り替え）', 'andw-lightbox' ),
+            'zoom'  => __( 'ズーム（拡大縮小で切り替え）', 'andw-lightbox' ),
+            'fade'  => __( 'フェード（ふわっと切り替え）', 'andw-lightbox' ),
         );
     }
 }
@@ -404,3 +414,4 @@ if ( ! function_exists( 'andw_lightbox_prepare_aria_label' ) ) {
         return implode( ' / ', $parts );
     }
 }
+

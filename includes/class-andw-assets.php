@@ -291,12 +291,19 @@ class Andw_Lightbox_Assets {
      */
     private function get_frontend_settings() {
         $animation = $this->settings->get( 'default_animation' );
+        $gallery_animation = $this->settings->get( 'gallery_animation' );
+
         if ( 'default' === $animation ) {
-            $animation = 'slide';
+            $animation = 'zoom';
+        }
+
+        if ( ! in_array( $gallery_animation, array( 'slide', 'zoom', 'fade', 'none' ), true ) ) {
+            $gallery_animation = 'slide';
         }
 
         return array(
             'defaultAnimation' => $animation,
+            'galleryAnimation' => $gallery_animation,
             'observer'         => $this->settings->is_enabled_flag( 'infinite_scroll' ),
             'hover'            => array(
                 'effect'   => $this->settings->get( 'default_hover' ),
