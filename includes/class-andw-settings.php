@@ -67,6 +67,7 @@ class Andw_Lightbox_Settings {
             'design_max_height'      => '',
             'design_overlay_color'   => '#000000',
             'design_overlay_opacity' => '0.92',
+            'design_mobile_navigation' => '0',
             'design_custom_css'      => '',
         );
     }
@@ -221,6 +222,12 @@ class Andw_Lightbox_Settings {
             $sanitized['design_overlay_opacity'] = max( 0, min( 1, $opacity ) );
         } else {
             $sanitized['design_overlay_opacity'] = isset( $existing_options['design_overlay_opacity'] ) ? $existing_options['design_overlay_opacity'] : $defaults['design_overlay_opacity'];
+        }
+
+        if ( isset( $input['design_mobile_navigation'] ) ) {
+            $sanitized['design_mobile_navigation'] = andw_lightbox_sanitize_checkbox( $input['design_mobile_navigation'] );
+        } else {
+            $sanitized['design_mobile_navigation'] = isset( $existing_options['design_mobile_navigation'] ) ? $existing_options['design_mobile_navigation'] : $defaults['design_mobile_navigation'];
         }
 
         if ( isset( $input['design_custom_css'] ) ) {

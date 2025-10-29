@@ -81,6 +81,7 @@ class Andw_Lightbox_Admin {
         add_settings_field( 'design_max_height', __( '最大高さ', 'andw-lightbox' ), array( $this, 'field_design_max_height' ), 'andw-lightbox-design', 'andw_lightbox_design' );
         add_settings_field( 'design_overlay_color', __( 'オーバーレイ色', 'andw-lightbox' ), array( $this, 'field_design_overlay_color' ), 'andw-lightbox-design', 'andw_lightbox_design' );
         add_settings_field( 'design_overlay_opacity', __( 'オーバーレイ透明度', 'andw-lightbox' ), array( $this, 'field_design_overlay_opacity' ), 'andw-lightbox-design', 'andw_lightbox_design' );
+        add_settings_field( 'design_mobile_navigation', __( 'モバイルでナビゲーション表示', 'andw-lightbox' ), array( $this, 'field_design_mobile_navigation' ), 'andw-lightbox-design', 'andw_lightbox_design' );
         add_settings_field( 'design_custom_css', __( 'カスタムCSS', 'andw-lightbox' ), array( $this, 'field_design_custom_css' ), 'andw-lightbox-design', 'andw_lightbox_design' );
     }
 
@@ -297,6 +298,14 @@ class Andw_Lightbox_Admin {
         echo '<label><input type="checkbox" name="' . esc_attr( $this->option_name() ) . '[design_show_description]" value="1" ';
         checked( '1', $checked );
         echo '> ' . esc_html__( 'ライトボックスで説明文を表示する', 'andw-lightbox' ) . '</label>';
+    }
+
+    public function field_design_mobile_navigation() {
+        $checked = $this->settings->get( 'design_mobile_navigation' );
+        echo '<input type="hidden" name="' . esc_attr( $this->option_name() ) . '[design_mobile_navigation]" value="0">';
+        echo '<label><input type="checkbox" name="' . esc_attr( $this->option_name() ) . '[design_mobile_navigation]" value="1" ';
+        checked( '1', $checked );
+        echo '> ' . esc_html__( 'スマートフォン表示でも前後ナビを表示する', 'andw-lightbox' ) . '</label>';
     }
 
     public function field_design_max_width() {
