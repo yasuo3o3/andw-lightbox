@@ -46,7 +46,7 @@ class Andw_Lightbox_Admin {
 
         add_settings_field( 'enabled', __( 'ライトボックスの既定状態', 'andw-lightbox' ), array( $this, 'field_enabled' ), 'andw-lightbox', 'andw_lightbox_general' );
         add_settings_field( 'default_slide', __( 'スライド表示', 'andw-lightbox' ), array( $this, 'field_default_slide' ), 'andw-lightbox', 'andw_lightbox_general' );
-        add_settings_field( 'default_gallery', __( '既定ギャラリー', 'andw-lightbox' ), array( $this, 'field_default_gallery' ), 'andw-lightbox', 'andw_lightbox_general' );
+        add_settings_field( 'default_gallery', __( '既定グループ', 'andw-lightbox' ), array( $this, 'field_default_gallery' ), 'andw-lightbox', 'andw_lightbox_general' );
         add_settings_field( 'default_animation', __( '開閉アニメーション', 'andw-lightbox' ), array( $this, 'field_default_animation' ), 'andw-lightbox', 'andw_lightbox_general' );
         add_settings_field( 'default_hover', __( 'ホバー効果', 'andw-lightbox' ), array( $this, 'field_default_hover' ), 'andw-lightbox', 'andw_lightbox_general' );
         add_settings_field( 'default_hover_strength', __( 'ホバー強度', 'andw-lightbox' ), array( $this, 'field_default_hover_strength' ), 'andw-lightbox', 'andw_lightbox_general' );
@@ -114,7 +114,7 @@ class Andw_Lightbox_Admin {
     public function field_default_slide() {
         echo '<label><input type="checkbox" name="' . esc_attr( $this->option_name() ) . '[default_slide]" value="1" ';
         checked( $this->settings->is_enabled_flag( 'default_slide' ), true );
-        echo '> ' . esc_html__( '同一ギャラリー内でのスライド切り替えを許可', 'andw-lightbox' ) . '</label>';
+        echo '> ' . esc_html__( '同一グループ内でのスライド切り替えを許可', 'andw-lightbox' ) . '</label>';
         echo '<p class="description">' . esc_html__( 'OFF にすると個別画像のみ表示します。', 'andw-lightbox' ) . '</p>';
     }
 
@@ -129,7 +129,7 @@ class Andw_Lightbox_Admin {
             echo '>' . esc_html( $label ) . '</option>';
         }
         echo '</select>';
-        echo '<p class="description">' . esc_html__( '固定ギャラリー番号の既定値を指定します。', 'andw-lightbox' ) . '</p>';
+        echo '<p class="description">' . esc_html__( '固定グループ番号の既定値を指定します。', 'andw-lightbox' ) . '</p>';
     }
 
     public function field_default_animation() {

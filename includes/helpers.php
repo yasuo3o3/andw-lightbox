@@ -69,11 +69,11 @@ if ( ! function_exists( 'andw_lightbox_get_gallery_options' ) ) {
     function andw_lightbox_get_gallery_options() {
         return array(
             'single'   => __( '単独表示', 'andw-lightbox' ),
-            'gallery1' => __( 'ギャラリー1', 'andw-lightbox' ),
-            'gallery2' => __( 'ギャラリー2', 'andw-lightbox' ),
-            'gallery3' => __( 'ギャラリー3', 'andw-lightbox' ),
-            'gallery4' => __( 'ギャラリー4', 'andw-lightbox' ),
-            'gallery5' => __( 'ギャラリー5', 'andw-lightbox' ),
+            'gallery1' => __( 'グループ1', 'andw-lightbox' ),
+            'gallery2' => __( 'グループ2', 'andw-lightbox' ),
+            'gallery3' => __( 'グループ3', 'andw-lightbox' ),
+            'gallery4' => __( 'グループ4', 'andw-lightbox' ),
+            'gallery5' => __( 'グループ5', 'andw-lightbox' ),
         );
     }
 }
