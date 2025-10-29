@@ -285,22 +285,16 @@ class Andw_Lightbox_Admin {
 
     public function field_design_show_title() {
         $checked = $this->settings->get( 'design_show_title' );
-        printf(
-            '<input type="checkbox" name="%1$s[design_show_title]" value="1" %2$s> %3$s',
-            esc_attr( $this->option_name() ),
-            checked( '1', $checked, false ),
-            esc_html__( 'ライトボックスでタイトルを表示する', 'andw-lightbox' )
-        );
+        echo '<label><input type="checkbox" name="' . esc_attr( $this->option_name() ) . '[design_show_title]" value="1" ';
+        checked( '1', $checked );
+        echo '> ' . esc_html__( 'ライトボックスでタイトルを表示する', 'andw-lightbox' ) . '</label>';
     }
 
     public function field_design_show_description() {
         $checked = $this->settings->get( 'design_show_description' );
-        printf(
-            '<input type="checkbox" name="%1$s[design_show_description]" value="1" %2$s> %3$s',
-            esc_attr( $this->option_name() ),
-            checked( '1', $checked, false ),
-            esc_html__( 'ライトボックスで説明文を表示する', 'andw-lightbox' )
-        );
+        echo '<label><input type="checkbox" name="' . esc_attr( $this->option_name() ) . '[design_show_description]" value="1" ';
+        checked( '1', $checked );
+        echo '> ' . esc_html__( 'ライトボックスで説明文を表示する', 'andw-lightbox' ) . '</label>';
     }
 
     public function field_design_max_width() {
