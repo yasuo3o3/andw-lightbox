@@ -184,6 +184,12 @@ class Andw_Lightbox_Assets {
             ANDW_LIGHTBOX_VERSION,
             true
         );
+
+        // デザイン設定によるカスタムCSS出力
+        $custom_css = $this->get_design_css();
+        if ( $custom_css ) {
+            wp_add_inline_style( 'andw-lightbox', $custom_css );
+        }
     }
 
     /**
@@ -297,6 +303,56 @@ class Andw_Lightbox_Assets {
                 'strength' => intval( $this->settings->get( 'default_hover_strength' ) ),
             ),
         );
+    }
+
+    /**
+     * Generate custom CSS based on design settings.
+     *
+     * @return string
+     */
+    private function get_design_css() {
+        $css_parts = array();
+
+        // サイズ制御
+        $max_width = $this->settings->get( 'design_max_width' );
+        $max_height = $this->settings->get( 'design_max_height' );
+        if ( $max_width || $max_height ) {
+            $stage_css = '.andw-glightbox-stage { ';
+            if ( $max_width ) {
+                $stage_css .= 'max-width: ' . esc_attr( $max_width ) . ' !important; ';
+            }
+            if ( $max_height ) {
+                $stage_css .= 'max-height: ' . esc_attr( $max_height ) . ' !important; ';
+            }
+            $stage_css .= '}';
+            $css_parts[] = $stage_css;
+        }
+
+        // オーバーレイ背景（CDN版 .goverlay と ローカル版 .andw-glightbox-backdrop 両方に対応）
+        $color = $this->settings->get( 'design_overlay_color' );
+        $opacity = $this->settings->get( 'design_overlay_opacity' );
+        if ( $color && $opacity ) {
+            $hex = ltrim( $color, '#' );
+            $r = hexdec( substr( $hex, 0, 2 ) );
+            $g = hexdec( substr( $hex, 2, 2 ) );
+            $b = hexdec( substr( $hex, 4, 2 ) );
+
+            $rgba_background = sprintf( 'rgba(%d, %d, %d, %s)', $r, $g, $b, esc_attr( $opacity ) );
+
+            // CDN版GLightbox用
+            $css_parts[] = '.goverlay { background: ' . $rgba_background . ' !important; }';
+
+            // ローカル版（フォールバック）用
+            $css_parts[] = '.andw-glightbox-backdrop { background: ' . $rgba_background . ' !important; }';
+        }
+
+        // カスタムCSS（サニタイズ済み生文字列をそのまま出力）
+        $custom = $this->settings->get( 'design_custom_css' );
+        if ( $custom ) {
+            $css_parts[] = $custom;
+        }
+
+        return implode( "\n", $css_parts );
     }
 }
 

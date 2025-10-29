@@ -60,6 +60,14 @@ class Andw_Lightbox_Settings {
             'infinite_scroll'        => '0',
             'glightbox_source'       => 'cdn',
             'glightbox_version'      => '3.3.0',
+            // デザイン設定
+            'design_show_title'      => '1',
+            'design_show_description' => '1',
+            'design_max_width'       => '',
+            'design_max_height'      => '',
+            'design_overlay_color'   => '#000000',
+            'design_overlay_opacity' => '0.92',
+            'design_custom_css'      => '',
         );
     }
 
@@ -107,6 +115,22 @@ class Andw_Lightbox_Settings {
 
         $version = sanitize_text_field( andw_lightbox_array_get( $input, 'glightbox_version', $defaults['glightbox_version'] ) );
         $sanitized['glightbox_version'] = $version ? $version : $defaults['glightbox_version'];
+
+        // デザイン設定のサニタイズ
+        $sanitized['design_show_title'] = andw_lightbox_sanitize_checkbox( andw_lightbox_array_get( $input, 'design_show_title', $defaults['design_show_title'] ) );
+        $sanitized['design_show_description'] = andw_lightbox_sanitize_checkbox( andw_lightbox_array_get( $input, 'design_show_description', $defaults['design_show_description'] ) );
+
+        $sanitized['design_max_width'] = sanitize_text_field( andw_lightbox_array_get( $input, 'design_max_width', $defaults['design_max_width'] ) );
+        $sanitized['design_max_height'] = sanitize_text_field( andw_lightbox_array_get( $input, 'design_max_height', $defaults['design_max_height'] ) );
+
+        $overlay_color = sanitize_hex_color( andw_lightbox_array_get( $input, 'design_overlay_color', $defaults['design_overlay_color'] ) );
+        $sanitized['design_overlay_color'] = $overlay_color ? $overlay_color : $defaults['design_overlay_color'];
+
+        $opacity = floatval( andw_lightbox_array_get( $input, 'design_overlay_opacity', $defaults['design_overlay_opacity'] ) );
+        $sanitized['design_overlay_opacity'] = max( 0, min( 1, $opacity ) );
+
+        $custom_css = andw_lightbox_array_get( $input, 'design_custom_css', $defaults['design_custom_css'] );
+        $sanitized['design_custom_css'] = sanitize_textarea_field( $custom_css );
 
         $this->options = wp_parse_args( $sanitized, $defaults );
 

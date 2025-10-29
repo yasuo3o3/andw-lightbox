@@ -317,13 +317,17 @@ class Andw_Lightbox_Frontend {
                 $description = wp_get_attachment_caption( $attachment_id );
             }
 
+            // デザイン設定による表示制御
+            $show_title = $this->settings->get( 'design_show_title' );
+            $show_description = $this->settings->get( 'design_show_description' );
+
             $title_attr = sanitize_text_field( $title );
-            if ( '' !== $title_attr ) {
+            if ( '1' === $show_title && '' !== $title_attr ) {
                 $anchor->setAttribute( 'data-title', $title_attr );
             }
 
             $description_attr = sanitize_textarea_field( $description );
-            if ( '' !== $description_attr ) {
+            if ( '1' === $show_description && '' !== $description_attr ) {
                 $anchor->setAttribute( 'data-description', $description_attr );
             }
 

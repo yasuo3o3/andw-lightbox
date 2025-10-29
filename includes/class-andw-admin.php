@@ -65,6 +65,23 @@ class Andw_Lightbox_Admin {
 
         add_settings_field( 'glightbox_source', __( 'GLightbox 取得元', 'andw-lightbox' ), array( $this, 'field_glightbox_source' ), 'andw-lightbox', 'andw_lightbox_assets' );
         add_settings_field( 'glightbox_version', __( 'GLightbox バージョン', 'andw-lightbox' ), array( $this, 'field_glightbox_version' ), 'andw-lightbox', 'andw_lightbox_assets' );
+
+        // デザイン設定セクション
+        add_settings_section(
+            'andw_lightbox_design',
+            __( 'デザイン設定', 'andw-lightbox' ),
+            array( $this, 'render_design_intro' ),
+            'andw-lightbox-design'
+        );
+
+        // デザイン設定フィールド
+        add_settings_field( 'design_show_title', __( 'タイトル表示', 'andw-lightbox' ), array( $this, 'field_design_show_title' ), 'andw-lightbox-design', 'andw_lightbox_design' );
+        add_settings_field( 'design_show_description', __( 'ディスクリプション表示', 'andw-lightbox' ), array( $this, 'field_design_show_description' ), 'andw-lightbox-design', 'andw_lightbox_design' );
+        add_settings_field( 'design_max_width', __( '最大幅', 'andw-lightbox' ), array( $this, 'field_design_max_width' ), 'andw-lightbox-design', 'andw_lightbox_design' );
+        add_settings_field( 'design_max_height', __( '最大高さ', 'andw-lightbox' ), array( $this, 'field_design_max_height' ), 'andw-lightbox-design', 'andw_lightbox_design' );
+        add_settings_field( 'design_overlay_color', __( 'オーバーレイ色', 'andw-lightbox' ), array( $this, 'field_design_overlay_color' ), 'andw-lightbox-design', 'andw_lightbox_design' );
+        add_settings_field( 'design_overlay_opacity', __( 'オーバーレイ透明度', 'andw-lightbox' ), array( $this, 'field_design_overlay_opacity' ), 'andw-lightbox-design', 'andw_lightbox_design' );
+        add_settings_field( 'design_custom_css', __( 'カスタムCSS', 'andw-lightbox' ), array( $this, 'field_design_custom_css' ), 'andw-lightbox-design', 'andw_lightbox_design' );
     }
 
     /**
@@ -89,11 +106,27 @@ class Andw_Lightbox_Admin {
             return;
         }
 
+        $active_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'general';
+
         echo '<div class="wrap">';
         echo '<h1>' . esc_html__( 'andW Lightbox 設定', 'andw-lightbox' ) . '</h1>';
+
+        // ナビタブ
+        echo '<h2 class="nav-tab-wrapper">';
+        echo '<a href="?page=andw-lightbox&tab=general" class="nav-tab ' . ( 'general' === $active_tab ? 'nav-tab-active' : '' ) . '">' . esc_html__( '基本設定', 'andw-lightbox' ) . '</a>';
+        echo '<a href="?page=andw-lightbox&tab=design" class="nav-tab ' . ( 'design' === $active_tab ? 'nav-tab-active' : '' ) . '">' . esc_html__( 'デザイン設定', 'andw-lightbox' ) . '</a>';
+        echo '</h2>';
+
         echo '<form action="' . esc_url( admin_url( 'options.php' ) ) . '" method="post">';
         settings_fields( 'andw_lightbox_settings' );
-        do_settings_sections( 'andw-lightbox' );
+
+        // タブ別セクション表示
+        if ( 'design' === $active_tab ) {
+            do_settings_sections( 'andw-lightbox-design' );
+        } else {
+            do_settings_sections( 'andw-lightbox' );
+        }
+
         submit_button();
         echo '</form>';
         echo '</div>';
@@ -240,6 +273,83 @@ class Andw_Lightbox_Admin {
             esc_attr( $this->option_name() ),
             esc_attr( $value ),
             esc_html__( 'CDN 利用時に読み込むバージョン番号を指定します。', 'andw-lightbox' )
+        );
+    }
+
+    /**
+     * Intro text for design section.
+     */
+    public function render_design_intro() {
+        echo '<p>' . esc_html__( 'ライトボックスの表示スタイルを調整できます。', 'andw-lightbox' ) . '</p>';
+    }
+
+    public function field_design_show_title() {
+        $checked = $this->settings->get( 'design_show_title' );
+        printf(
+            '<input type="checkbox" name="%1$s[design_show_title]" value="1" %2$s> %3$s',
+            esc_attr( $this->option_name() ),
+            checked( '1', $checked, false ),
+            esc_html__( 'ライトボックスでタイトルを表示する', 'andw-lightbox' )
+        );
+    }
+
+    public function field_design_show_description() {
+        $checked = $this->settings->get( 'design_show_description' );
+        printf(
+            '<input type="checkbox" name="%1$s[design_show_description]" value="1" %2$s> %3$s',
+            esc_attr( $this->option_name() ),
+            checked( '1', $checked, false ),
+            esc_html__( 'ライトボックスで説明文を表示する', 'andw-lightbox' )
+        );
+    }
+
+    public function field_design_max_width() {
+        $value = $this->settings->get( 'design_max_width' );
+        printf(
+            '<input type="text" name="%1$s[design_max_width]" value="%2$s" placeholder="80%%" class="regular-text"> <span class="description">%3$s</span>',
+            esc_attr( $this->option_name() ),
+            esc_attr( $value ),
+            esc_html__( '例: 80%, 800px（空欄=デフォルト）', 'andw-lightbox' )
+        );
+    }
+
+    public function field_design_max_height() {
+        $value = $this->settings->get( 'design_max_height' );
+        printf(
+            '<input type="text" name="%1$s[design_max_height]" value="%2$s" placeholder="80%%" class="regular-text"> <span class="description">%3$s</span>',
+            esc_attr( $this->option_name() ),
+            esc_attr( $value ),
+            esc_html__( '例: 80vh, 600px（空欄=デフォルト）', 'andw-lightbox' )
+        );
+    }
+
+    public function field_design_overlay_color() {
+        $value = $this->settings->get( 'design_overlay_color' );
+        printf(
+            '<input type="color" name="%1$s[design_overlay_color]" value="%2$s"> <span class="description">%3$s</span>',
+            esc_attr( $this->option_name() ),
+            esc_attr( $value ),
+            esc_html__( 'ライトボックス背景色を指定', 'andw-lightbox' )
+        );
+    }
+
+    public function field_design_overlay_opacity() {
+        $value = $this->settings->get( 'design_overlay_opacity' );
+        printf(
+            '<input type="number" min="0" max="1" step="0.01" name="%1$s[design_overlay_opacity]" value="%2$s" class="small-text"> <span class="description">%3$s</span>',
+            esc_attr( $this->option_name() ),
+            esc_attr( $value ),
+            esc_html__( '0（透明）〜1（不透明）の範囲で指定', 'andw-lightbox' )
+        );
+    }
+
+    public function field_design_custom_css() {
+        $value = $this->settings->get( 'design_custom_css' );
+        printf(
+            '<textarea name="%1$s[design_custom_css]" rows="10" cols="50" class="large-text code">%2$s</textarea><br><span class="description">%3$s</span>',
+            esc_attr( $this->option_name() ),
+            esc_textarea( $value ),
+            esc_html__( 'GLightbox説明文エリア用のCSSルールを記述してください。', 'andw-lightbox' )
         );
     }
 }
