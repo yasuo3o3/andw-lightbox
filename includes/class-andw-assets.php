@@ -405,15 +405,15 @@ class Andw_Lightbox_Assets {
 CSS;
         }
 
+        // CDN版GLightbox 説明文エリアのデフォルトスタイルリセット
+        $css_parts[] = '.glightbox-clean .gdesc-inner { padding: 0; }';
+        $css_parts[] = '.glightbox-clean .gslide-title { font-size: inherit; font-weight: inherit; font-family: inherit; margin: 0; line-height: inherit; }';
+        $css_parts[] = '.glightbox-clean .gslide-desc { font-size: inherit; margin-bottom: 0; font-family: inherit; line-height: inherit; }';
+
         $custom = $this->settings->get( 'design_custom_css' );
         if ( $custom ) {
             $css_parts[] = $custom;
         }
-
-        // CDN版GLightbox 説明文エリアのデフォルトスタイルリセット
-        $css_parts[] = 'html body .glightbox-clean .gslide-description .gdesc-inner { padding: 0; }';
-        $css_parts[] = 'html body .glightbox-clean .gslide-description .gslide-title { font-size: inherit; font-weight: inherit; font-family: inherit; margin: 0; line-height: inherit; }';
-        $css_parts[] = 'html body .glightbox-clean .gslide-description .gslide-desc { font-size: inherit; margin-bottom: 0; font-family: inherit; line-height: inherit; }';
 
         return implode( "\n", $css_parts );
     }
