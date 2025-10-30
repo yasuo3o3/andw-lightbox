@@ -410,6 +410,11 @@ CSS;
             $css_parts[] = $custom;
         }
 
+        // CDN版GLightbox 説明文エリアのデフォルトスタイルリセット
+        $css_parts[] = '.glightbox-container .glightbox-clean .gdesc-inner { padding: 0; }';
+        $css_parts[] = '.glightbox-container .glightbox-clean .gslide-title { font-size: inherit; font-weight: inherit; font-family: inherit; margin-bottom: 0; line-height: inherit; }';
+        $css_parts[] = '.glightbox-container .glightbox-clean .gslide-desc { font-size: inherit; margin-bottom: 0; font-family: inherit; line-height: inherit; }';
+
         return implode( "\n", $css_parts );
     }
 }
