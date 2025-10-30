@@ -23,6 +23,13 @@ class Andw_Lightbox_Frontend {
         'core/media-text',
     );
 
+    /**
+     * Gallery animation cache for group consistency.
+     *
+     * @var array
+     */
+    private $gallery_animation_cache = array();
+
     public function __construct( Andw_Lightbox_Settings $settings, Andw_Lightbox_Assets $assets ) {
         $this->settings = $settings;
         $this->assets   = $assets;
@@ -284,6 +291,38 @@ class Andw_Lightbox_Frontend {
     }
 
     /**
+     * Get unified animation setting for gallery group.
+     *
+     * @param array $settings Lightbox settings.
+     * @param int   $post_id Post ID.
+     * @return string Unified animation setting.
+     */
+    private function get_unified_animation( $settings, $post_id ) {
+        // 単独表示の場合は個別設定を適用
+        if ( ! $settings['slide'] || 'single' === $settings['gallery'] ) {
+            return $settings['animation'];
+        }
+
+        // グループ統一が無効の場合は個別設定を適用
+        if ( ! $settings['enforce_group_animation'] ) {
+            return $settings['animation'];
+        }
+
+        // ギャラリーIDを生成
+        $gallery_id = andw_lightbox_build_gallery_id( $post_id, $settings['gallery'] );
+
+        // キャッシュから取得
+        if ( isset( $this->gallery_animation_cache[ $gallery_id ] ) ) {
+            return $this->gallery_animation_cache[ $gallery_id ];
+        }
+
+        // 初回の場合はこの設定をキャッシュ
+        $this->gallery_animation_cache[ $gallery_id ] = $settings['animation'];
+
+        return $settings['animation'];
+    }
+
+    /**
      * Configure anchor element for lightbox functionality.
      *
      * @param DOMElement $anchor The anchor element to configure.
@@ -301,8 +340,15 @@ class Andw_Lightbox_Frontend {
             $anchor->setAttribute( 'data-gallery', andw_lightbox_build_gallery_id( $post_id, $settings['gallery'] ) );
         }
 
-        if ( $settings['animation'] ) {
-            $anchor->setAttribute( 'data-andw-animation', $settings['animation'] );
+        // 統一制御されたアニメーション設定を適用
+        $unified_animation = $this->get_unified_animation( $settings, $post_id );
+        if ( $unified_animation ) {
+            $anchor->setAttribute( 'data-andw-animation', $unified_animation );
+        }
+
+        // ギャラリー切り替えアニメーション設定（スライド表示時のみ）
+        if ( $settings['slide'] && $settings['gallery_animation'] ) {
+            $anchor->setAttribute( 'data-andw-gallery-animation', $settings['gallery_animation'] );
         }
 
         $style_parts = array();
