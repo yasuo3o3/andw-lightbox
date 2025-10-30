@@ -411,9 +411,9 @@ CSS;
         }
 
         // CDN版GLightbox 説明文エリアのデフォルトスタイルリセット
-        $css_parts[] = 'body .glightbox-clean .gdesc-inner { padding: 0; }';
-        $css_parts[] = 'body .glightbox-clean .gslide-title { font-size: inherit; font-weight: inherit; font-family: inherit; margin: 0; line-height: inherit; }';
-        $css_parts[] = 'body .glightbox-clean .gslide-desc { font-size: inherit; margin-bottom: 0; font-family: inherit; line-height: inherit; }';
+        $css_parts[] = 'body .glightbox-clean .gslide-description .gdesc-inner { padding: 0; }';
+        $css_parts[] = 'body .glightbox-clean .gslide-description .gslide-title { font-size: inherit; font-weight: inherit; font-family: inherit; margin: 0; line-height: inherit; }';
+        $css_parts[] = 'body .glightbox-clean .gslide-description .gslide-desc { font-size: inherit; margin-bottom: 0; font-family: inherit; line-height: inherit; }';
 
         return implode( "\n", $css_parts );
     }
