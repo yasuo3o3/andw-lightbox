@@ -49,6 +49,8 @@ class Andw_Lightbox_Admin {
         add_settings_field( 'default_gallery', __( '既定グループ', 'andw-lightbox' ), array( $this, 'field_default_gallery' ), 'andw-lightbox', 'andw_lightbox_general' );
         add_settings_field( 'default_animation', __( '開閉エフェクト', 'andw-lightbox' ), array( $this, 'field_default_animation' ), 'andw-lightbox', 'andw_lightbox_general' );
         add_settings_field( 'gallery_animation', __( 'ギャラリー切替アニメーション', 'andw-lightbox' ), array( $this, 'field_gallery_animation' ), 'andw-lightbox', 'andw_lightbox_general' );
+        add_settings_field( 'enforce_group_animation', __( 'グループ内アニメーション統一', 'andw-lightbox' ), array( $this, 'field_enforce_group_animation' ), 'andw-lightbox', 'andw_lightbox_general' );
+        add_settings_field( 'enforce_gallery_animation', __( 'ギャラリー切替統一設定', 'andw-lightbox' ), array( $this, 'field_enforce_gallery_animation' ), 'andw-lightbox', 'andw_lightbox_general' );
         add_settings_field( 'default_hover', __( 'ホバー効果', 'andw-lightbox' ), array( $this, 'field_default_hover' ), 'andw-lightbox', 'andw_lightbox_general' );
         add_settings_field( 'default_hover_strength', __( 'ホバー強度', 'andw-lightbox' ), array( $this, 'field_default_hover_strength' ), 'andw-lightbox', 'andw_lightbox_general' );
         add_settings_field( 'default_transform', __( 'トランスフォーム', 'andw-lightbox' ), array( $this, 'field_default_transform' ), 'andw-lightbox', 'andw_lightbox_general' );
@@ -362,6 +364,24 @@ class Andw_Lightbox_Admin {
             esc_attr( $value ),
             esc_html__( '0（透明）〜1（不透明）の範囲で指定', 'andw-lightbox' )
         );
+    }
+
+    public function field_enforce_group_animation() {
+        $checked = $this->settings->get( 'enforce_group_animation' );
+        echo '<input type="hidden" name="' . esc_attr( $this->option_name() ) . '[enforce_group_animation]" value="0">';
+        echo '<label><input type="checkbox" name="' . esc_attr( $this->option_name() ) . '[enforce_group_animation]" value="1" ';
+        checked( '1', $checked );
+        echo '> ' . esc_html__( 'グループ化された画像では開閉アニメーションを統一する', 'andw-lightbox' ) . '</label>';
+        echo '<p class="description">' . esc_html__( 'ON時、グループ内では最初の画像の設定を適用します。個別設定は単独表示時のみ有効になります。', 'andw-lightbox' ) . '</p>';
+    }
+
+    public function field_enforce_gallery_animation() {
+        $checked = $this->settings->get( 'enforce_gallery_animation' );
+        echo '<input type="hidden" name="' . esc_attr( $this->option_name() ) . '[enforce_gallery_animation]" value="0">';
+        echo '<label><input type="checkbox" name="' . esc_attr( $this->option_name() ) . '[enforce_gallery_animation]" value="1" ';
+        checked( '1', $checked );
+        echo '> ' . esc_html__( 'ギャラリー切替アニメーションをサイト全体で統一する', 'andw-lightbox' ) . '</label>';
+        echo '<p class="description">' . esc_html__( 'ON時、個別ページでのギャラリー切替アニメーション設定を無効化します。', 'andw-lightbox' ) . '</p>';
     }
 
     public function field_design_custom_css() {

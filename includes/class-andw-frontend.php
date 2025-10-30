@@ -113,6 +113,9 @@ class Andw_Lightbox_Frontend {
             'title'          => '',
             'description'    => '',
             'allow_full'     => $this->settings->is_enabled_flag( 'allow_full' ),
+            'gallery_animation' => sanitize_key( $this->settings->get( 'gallery_animation' ) ),
+            'enforce_group_animation' => $this->settings->is_enabled_flag( 'enforce_group_animation' ),
+            'enforce_gallery_animation' => $this->settings->is_enabled_flag( 'enforce_gallery_animation' ),
         );
 
         $animation = isset( $attrs['andwLightboxAnimation'] ) ? sanitize_key( $attrs['andwLightboxAnimation'] ) : $defaults['animation'];
@@ -164,6 +167,16 @@ class Andw_Lightbox_Frontend {
             $transform_strength = 100;
         }
 
+        // ギャラリー切り替えアニメーション個別設定処理
+        $gallery_animation = $defaults['gallery_animation'];
+        if ( ! $defaults['enforce_gallery_animation'] && isset( $attrs['andwGalleryAnimation'] ) ) {
+            $gallery_animation = sanitize_key( $attrs['andwGalleryAnimation'] );
+            $gallery_animation_choices = array_keys( andw_lightbox_get_gallery_animation_options() );
+            if ( ! in_array( $gallery_animation, $gallery_animation_choices, true ) ) {
+                $gallery_animation = $defaults['gallery_animation'];
+            }
+        }
+
         return array(
             'enabled'        => isset( $attrs['andwLightboxEnabled'] ) ? (bool) $attrs['andwLightboxEnabled'] : (bool) $defaults['enabled'],
             'slide'          => isset( $attrs['andwLightboxSlide'] ) ? (bool) $attrs['andwLightboxSlide'] : (bool) $defaults['slide'],
@@ -177,6 +190,9 @@ class Andw_Lightbox_Frontend {
             'title'          => isset( $attrs['andwLightboxTitle'] ) ? sanitize_text_field( $attrs['andwLightboxTitle'] ) : $defaults['title'],
             'description'    => isset( $attrs['andwLightboxDescription'] ) ? sanitize_textarea_field( $attrs['andwLightboxDescription'] ) : $defaults['description'],
             'allow_full'     => (bool) $defaults['allow_full'],
+            'gallery_animation' => $gallery_animation,
+            'enforce_group_animation' => (bool) $defaults['enforce_group_animation'],
+            'enforce_gallery_animation' => (bool) $defaults['enforce_gallery_animation'],
         );
     }
 

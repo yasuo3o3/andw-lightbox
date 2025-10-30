@@ -119,6 +119,10 @@ class Andw_Lightbox_Block_Editor {
                 'type'    => 'string',
                 'default' => $defaults['andwLightboxDescription'],
             ),
+            'andwGalleryAnimation'      => array(
+                'type'    => 'string',
+                'default' => $defaults['andwGalleryAnimation'],
+            ),
         );
     }
 
@@ -143,6 +147,7 @@ class Andw_Lightbox_Block_Editor {
             'andwLightboxSize'          => sanitize_key( $this->settings->get( 'default_size' ) ),
             'andwLightboxTitle'         => '',
             'andwLightboxDescription'   => '',
+            'andwGalleryAnimation'      => sanitize_key( $this->settings->get( 'gallery_animation' ) ),
         );
     }
 
@@ -165,6 +170,7 @@ class Andw_Lightbox_Block_Editor {
                 'hover'     => $this->format_choices( andw_lightbox_get_hover_options() ),
                 'transform' => $this->format_choices( andw_lightbox_get_transform_options() ),
                 'size'      => $this->format_choices( andw_lightbox_get_registered_size_choices() ),
+                'galleryAnimation' => $this->format_choices( andw_lightbox_get_gallery_animation_options() ),
             ),
             'labels'          => array(
                 'panel'         => __( 'ライトボックス設定', 'andw-lightbox' ),
@@ -179,6 +185,7 @@ class Andw_Lightbox_Block_Editor {
                 'size'          => __( '拡大画像サイズ', 'andw-lightbox' ),
                 'title'         => __( 'タイトル', 'andw-lightbox' ),
                 'description'   => __( '説明文', 'andw-lightbox' ),
+                'galleryAnimation' => __( 'ギャラリー切替アニメーション', 'andw-lightbox' ),
             ),
             'range'           => array(
                 'hoverStrength' => array(
