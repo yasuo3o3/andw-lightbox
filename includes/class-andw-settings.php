@@ -73,27 +73,16 @@ class Andw_Lightbox_Settings {
             'design_mobile_navigation' => '0',
             'design_custom_css'      => '/* GLightbox 説明文エリアのカスタマイズ */
 .gslide-description {
-    /* 説明文全体のコンテナ
-     * 例: background-color, padding, border-radius など
-     */
+    /* 説明文全体のコンテナ */
 }
-
 .gdesc-inner {
-    /* 説明文内部コンテナ
-     * 例: max-width, margin, text-align など
-     */
+    /* 説明文内部コンテナ */
 }
-
 .gslide-title {
-    /* タイトル部分（h4要素）
-     * 例: font-size, color, margin など
-     */
+    /* タイトル部分（h4要素） */
 }
-
 .gslide-desc {
-    /* 説明文テキスト部分（div要素）
-     * 例: font-size, line-height, color など
-     */
+    /* 説明文テキスト部分（div要素） */
 }',
         );
     }
