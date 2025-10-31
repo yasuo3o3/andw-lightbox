@@ -190,7 +190,7 @@ npm run package
 
 ```bash
 # Update version in all necessary files
-npm run version:bump -- 0.2.0
+npm run version:bump -- 0.2.1
 
 # Or manually update:
 # - andw-lightbox.php (Plugin Name header + constant)
