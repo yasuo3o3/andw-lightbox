@@ -110,7 +110,8 @@ class Andw_Lightbox_Admin {
             return;
         }
 
-        $active_tab = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'general';
+        $active_tab = filter_input( INPUT_GET, 'tab', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+        $active_tab = $active_tab ? sanitize_key( $active_tab ) : 'general';
 
         echo '<div class="wrap">';
         echo '<h1>' . esc_html__( 'andW Lightbox 設定', 'andw-lightbox' ) . '</h1>';

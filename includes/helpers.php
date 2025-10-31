@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Utility helpers for andW Lightbox.
  */

@@ -359,50 +359,51 @@ class Andw_Lightbox_Assets {
 
         // カスタムCSS（サニタイズ済み生文字列をそのまま出力）
         if ( $this->settings->is_enabled_flag( 'design_mobile_navigation' ) ) {
-            $css_parts[] = <<<CSS
-@media (max-width: 782px) {
-    .glightbox-clean .gprev,
-    .glightbox-clean .gnext {
-        top: 50% !important;
-        transform: translateY(-50%);
-        width: 25px;
-        height: 44px;
-        background: rgba(0, 0, 0, 0.25);
-    }
-    .glightbox-clean .gprev {
-        left: 0 !important;
-        right: auto !important;
-    }
-    .glightbox-clean .gnext {
-        right: 0 !important;
-        left: auto !important;
-    }
-    .glightbox-clean .gprev svg,
-    .glightbox-clean .gnext svg {
-        width: 15px;
-        height: auto;
-    }
-    .andw-glightbox-prev,
-    .andw-glightbox-next {
-        width: 25px;
-        height: 44px;
-        background: rgba(0, 0, 0, 0.25);
-    }
-    .andw-glightbox-prev {
-        left: 0;
-        right: auto;
-    }
-    .andw-glightbox-next {
-        right: 0;
-        left: auto;
-    }
-    .andw-glightbox-prev svg,
-    .andw-glightbox-next svg {
-        width: 15px;
-        height: auto;
-    }
-}
-CSS;
+            $mobile_css = array(
+                '@media (max-width: 782px) {',
+                '    .glightbox-clean .gprev,',
+                '    .glightbox-clean .gnext {',
+                '        top: 50% !important;',
+                '        transform: translateY(-50%);',
+                '        width: 25px;',
+                '        height: 44px;',
+                '        background: rgba(0, 0, 0, 0.25);',
+                '    }',
+                '    .glightbox-clean .gprev {',
+                '        left: 0 !important;',
+                '        right: auto !important;',
+                '    }',
+                '    .glightbox-clean .gnext {',
+                '        right: 0 !important;',
+                '        left: auto !important;',
+                '    }',
+                '    .glightbox-clean .gprev svg,',
+                '    .glightbox-clean .gnext svg {',
+                '        width: 15px;',
+                '        height: auto;',
+                '    }',
+                '    .andw-glightbox-prev,',
+                '    .andw-glightbox-next {',
+                '        width: 25px;',
+                '        height: 44px;',
+                '        background: rgba(0, 0, 0, 0.25);',
+                '    }',
+                '    .andw-glightbox-prev {',
+                '        left: 0;',
+                '        right: auto;',
+                '    }',
+                '    .andw-glightbox-next {',
+                '        right: 0;',
+                '        left: auto;',
+                '    }',
+                '    .andw-glightbox-prev svg,',
+                '    .andw-glightbox-next svg {',
+                '        width: 15px;',
+                '        height: auto;',
+                '    }',
+                '}',
+            );
+            $css_parts[] = implode( "\n", $mobile_css );
         }
 
         // CDN版GLightbox 説明文エリアのデフォルトスタイルリセット
