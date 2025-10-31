@@ -368,13 +368,20 @@ content:"-"; margin: 0 5px;
      * @param string $key Option key.
      */
     public function get( $key ) {
+        $value = null;
+
         if ( isset( $this->options[ $key ] ) ) {
-            return $this->options[ $key ];
+            $value = $this->options[ $key ];
+        } else {
+            $defaults = $this->get_defaults();
+            $value    = isset( $defaults[ $key ] ) ? $defaults[ $key ] : null;
         }
 
-        $defaults = $this->get_defaults();
+        if ( 'design_custom_css' === $key && null !== $value ) {
+            $value = $this->restore_comment_markers( $value );
+        }
 
-        return isset( $defaults[ $key ] ) ? $defaults[ $key ] : null;
+        return $value;
     }
 
     /**
