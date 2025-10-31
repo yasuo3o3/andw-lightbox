@@ -284,18 +284,9 @@ content:"-"; margin: 0 5px;
         if ( isset( $input['design_custom_css'] ) ) {
             $css_content = sanitize_textarea_field( $input['design_custom_css'] );
 
-            // Restore half-width comment markers that were previously widened for WAF avoidance
-            $css_content = str_replace(
-                array( "\xEF\xBC\x8F\xEF\xBC\x8A", "\xEF\xBC\x8A\xEF\xBC\x8F" ),
-                array( '/*', '*/' ),
-                $css_content
-            );
+            $css_content = $this->restore_comment_markers( $css_content );
 
-            // Check if the content exactly matches the placeholder template
-            $normalized_input = $this->normalize_css_content( $css_content );
-            $normalized_placeholder = $this->normalize_css_content( self::PLACEHOLDER_CSS );
-
-            if ( $normalized_input === $normalized_placeholder ) {
+            if ( $this->is_placeholder_css( $css_content ) ) {
                 $css_content = '';
             }
 
@@ -311,31 +302,54 @@ content:"-"; margin: 0 5px;
     }
 
     /**
-     * Normalize CSS content for comparison.
-     * Removes excess whitespace, normalizes line endings, and trims.
+     * Restore half-width comment markers that may have been converted to full-width variants.
      *
-     * @param string $css_content CSS content to normalize.
-     * @return string Normalized CSS content.
+     * @param string $css_content CSS content.
+     * @return string Restored CSS content.
      */
-    private function normalize_css_content( $css_content ) {
-        // Convert different line endings to \n
-        $normalized = str_replace( array( "\r\n", "\r" ), "\n", $css_content );
+    private function restore_comment_markers( $css_content ) {
+        return strtr(
+            $css_content,
+            array(
+                "/\xEF\xBC\x8A" => '/*',
+                "\xEF\xBC\x8A/" => '*/',
+                "\xEF\xBC\x8F\xEF\xBC\x8A" => '/*',
+                "\xEF\xBC\x8A\xEF\xBC\x8F" => '*/',
+            )
+        );
+    }
 
-        // Remove leading/trailing whitespace
+    /**
+     * Determine whether the provided CSS content matches the built-in placeholder exactly.
+     *
+     * @param string $css_content CSS content.
+     * @return bool True if the content should be treated as placeholder.
+     */
+    private function is_placeholder_css( $css_content ) {
+        $normalized_input       = $this->normalize_placeholder_comparison( $css_content );
+        $normalized_placeholder = $this->normalize_placeholder_comparison( self::PLACEHOLDER_CSS );
+
+        return '' !== $normalized_input && $normalized_input === $normalized_placeholder;
+    }
+
+    /**
+     * Normalize content for placeholder comparison.
+     *
+     * @param string $content Raw content.
+     * @return string Normalized content.
+     */
+    private function normalize_placeholder_comparison( $content ) {
+        $normalized = str_replace( array( "\r\n", "\r" ), "\n", $content );
         $normalized = trim( $normalized );
 
-        // Split into lines, normalize each line, then rejoin
-        $lines = explode( "\n", $normalized );
-        $normalized_lines = array();
+        if ( '' === $normalized ) {
+            return '';
+        }
 
+        $lines              = explode( "\n", $normalized );
+        $normalized_lines   = array();
         foreach ( $lines as $line ) {
-            // Trim each line and normalize spaces/tabs
-            $trimmed_line = trim( $line );
-            if ( ! empty( $trimmed_line ) ) {
-                // Normalize multiple consecutive spaces/tabs to single space
-                $normalized_line = preg_replace( '/[ \t]+/', ' ', $trimmed_line );
-                $normalized_lines[] = $normalized_line;
-            }
+            $normalized_lines[] = preg_replace( '/\s+/', ' ', trim( $line ) );
         }
 
         return implode( "\n", $normalized_lines );
