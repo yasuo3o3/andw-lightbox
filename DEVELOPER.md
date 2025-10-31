@@ -190,7 +190,7 @@ npm run package
 
 ```bash
 # Update version in all necessary files
-npm run version:bump -- 0.1.2
+npm run version:bump -- 0.2.0
 
 # Or manually update:
 # - andw-lightbox.php (Plugin Name header + constant)
@@ -216,11 +216,11 @@ npm run version:bump -- 0.1.2
    svn add andw-lightbox/trunk/*
 
    # Commit changes
-   svn ci andw-lightbox/trunk -m "Version 0.1.2 release"
+   svn ci andw-lightbox/trunk -m "Version 0.2.0 release"
 
    # Create tag
-   svn cp andw-lightbox/trunk andw-lightbox/tags/0.1.2
-   svn ci andw-lightbox/tags/0.1.2 -m "Tagging version 0.1.2"
+   svn cp andw-lightbox/trunk andw-lightbox/tags/0.2.0
+   svn ci andw-lightbox/tags/0.2.0 -m "Tagging version 0.2.0"
    ```
 
 ## CI/CD Implementation Notes

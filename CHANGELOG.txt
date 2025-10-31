@@ -5,6 +5,22 @@ All notable changes to andW Lightbox will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2024-11-01
+
+### Fixed
+- **CDN Dependency**: Changed default GLightbox source from CDN to local assets for WordPress.org compliance
+- **libxml Settings**: Implemented proper restoration of libxml error handling to prevent interference with other plugins
+- **Security**: Fixed WordPress.Security.NonceVerification.Recommended warning with safer GET parameter handling
+- **Code Standards**: Resolved PHP Coding Standards errors (UTF-8 BOM removal, heredoc syntax)
+
+### Changed
+- **Performance**: Enhanced conditional asset loading based on content analysis
+- **Security**: Improved input sanitization and output escaping practices
+
+### Added
+- **Review Process**: Comprehensive security and performance review completed
+- **Quality Assurance**: Enhanced error handling and validation
+
 ## [0.1.2] - 2024-10-29
 
 ### Changed

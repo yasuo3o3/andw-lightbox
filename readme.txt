@@ -4,7 +4,7 @@ Tags: lightbox, gallery, media, images
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.1.2
+Stable tag: 0.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -73,6 +73,13 @@ andW Lightbox は、GLightbox ベースのソリューションで、WordPress �
 **設定 → andW Lightbox → アセット設定** で アセットソースを「同梱ファイル」に切り替えて、バンドルされたフォールバックを読み込みます。
 
 === 変更履歴 ===
+
+= 0.2.0 =
+* レビュー対応とコード品質向上
+* CDN依存問題を修正してWordPress.org審査に対応
+* libxml設定の適切な復元処理を実装
+* PHP Coding Standards エラーを修正
+* セキュリティ強化とパフォーマンス最適化
 
 = 0.1.2 =
 * WordPress.org 提出のためのドキュメント強化
