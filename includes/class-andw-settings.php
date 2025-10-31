@@ -7,6 +7,36 @@ defined( 'ABSPATH' ) || exit;
 
 class Andw_Lightbox_Settings {
     /**
+     * Default placeholder CSS template content.
+     *
+     * @var string
+     */
+    const PLACEHOLDER_CSS = '/* GLightbox 説明文エリアのカスタマイズ */
+.glightbox-clean .gslide-media{ /* メディア表示のコンテナ */
+margin-top:25px;
+}
+
+.glightbox-clean .gslide-description { /* 説明文全体のコンテナ */
+background-color:rgba(0,0,0,0); padding-bottom:10px;
+}
+
+.glightbox-clean .gdesc-inner { /* 説明文内部コンテナ */
+padding: 0 0.5rem 0.2rem 0.5rem;
+}
+
+.glightbox-clean .gslide-title { /* タイトル部分（h4要素） */
+color:#fff; display:inline; font-size:1rem; line-height:1.1;
+}
+
+.glightbox-clean .gslide-desc { /* 説明文テキスト部分（div要素） */
+color:#fff; display:inline; font-size:0.8rem; line-height:1.1;
+}
+
+.glightbox-clean .gslide-desc::before {
+content:"-"; margin: 0 5px;
+}';
+
+    /**
      * Singleton instance.
      *
      * @var Andw_Lightbox_Settings|null
@@ -261,7 +291,11 @@ class Andw_Lightbox_Settings {
                 $css_content
             );
 
-            if ( 0 === strpos( ltrim( $css_content ), '/* GLightbox ' ) ) {
+            // Check if the content exactly matches the placeholder template
+            $normalized_input = $this->normalize_css_content( $css_content );
+            $normalized_placeholder = $this->normalize_css_content( self::PLACEHOLDER_CSS );
+
+            if ( $normalized_input === $normalized_placeholder ) {
                 $css_content = '';
             }
 
@@ -274,6 +308,37 @@ class Andw_Lightbox_Settings {
         $this->options = wp_parse_args( $sanitized, $defaults );
 
         return $this->options;
+    }
+
+    /**
+     * Normalize CSS content for comparison.
+     * Removes excess whitespace, normalizes line endings, and trims.
+     *
+     * @param string $css_content CSS content to normalize.
+     * @return string Normalized CSS content.
+     */
+    private function normalize_css_content( $css_content ) {
+        // Convert different line endings to \n
+        $normalized = str_replace( array( "\r\n", "\r" ), "\n", $css_content );
+
+        // Remove leading/trailing whitespace
+        $normalized = trim( $normalized );
+
+        // Split into lines, normalize each line, then rejoin
+        $lines = explode( "\n", $normalized );
+        $normalized_lines = array();
+
+        foreach ( $lines as $line ) {
+            // Trim each line and normalize spaces/tabs
+            $trimmed_line = trim( $line );
+            if ( ! empty( $trimmed_line ) ) {
+                // Normalize multiple consecutive spaces/tabs to single space
+                $normalized_line = preg_replace( '/[ \t]+/', ' ', $trimmed_line );
+                $normalized_lines[] = $normalized_line;
+            }
+        }
+
+        return implode( "\n", $normalized_lines );
     }
 
     /**
