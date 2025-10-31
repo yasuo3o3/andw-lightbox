@@ -163,9 +163,9 @@ class Andw_Lightbox_Block_Editor {
             'options'         => array(
                 'gallery'   => $this->format_choices( andw_lightbox_get_gallery_options() ),
                 'animation' => array(
-                    array( 'value' => 'zoom', 'label' => __( 'ズーム（ふわっと拡大）', 'andw-lightbox' ) ),
-                    array( 'value' => 'fade', 'label' => __( 'フェード（さっと表示）', 'andw-lightbox' ) ),
-                    array( 'value' => 'none', 'label' => __( 'なし（瞬間表示）', 'andw-lightbox' ) ),
+                    array( 'value' => 'zoom', 'label' => __( 'ズーム（ゆっくり表示）', 'andw-lightbox' ) ),
+                    array( 'value' => 'fade', 'label' => __( 'フェード（素早く表示）', 'andw-lightbox' ) ),
+                    array( 'value' => 'none', 'label' => __( 'なし（開閉エフェクトなし）', 'andw-lightbox' ) ),
                 ),
                 'hover'     => $this->format_choices( andw_lightbox_get_hover_options() ),
                 'transform' => $this->format_choices( andw_lightbox_get_transform_options() ),
