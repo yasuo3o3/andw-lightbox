@@ -61,7 +61,7 @@ class Andw_Lightbox_Settings {
             'default_size'           => 'default',
             'allow_full'             => '0',
             'infinite_scroll'        => '0',
-            'glightbox_source'       => 'cdn',
+            'glightbox_source'       => 'local',
             'glightbox_version'      => '3.3.0',
             // デザイン設定
             'design_show_title'      => '1',

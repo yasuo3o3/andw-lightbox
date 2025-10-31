@@ -219,7 +219,7 @@ class Andw_Lightbox_Frontend {
         $updated = false;
 
         $dom = new DOMDocument( '1.0', 'UTF-8' );
-        libxml_use_internal_errors( true );
+        $previous_libxml_errors = libxml_use_internal_errors( true );
         $dom->loadHTML( '<?xml encoding="utf-8"?><div>' . $html . '</div>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
         libxml_clear_errors();
 
@@ -277,6 +277,7 @@ class Andw_Lightbox_Frontend {
         }
 
         if ( ! $updated ) {
+            libxml_use_internal_errors( $previous_libxml_errors );
             return $html;
         }
 
@@ -287,6 +288,7 @@ class Andw_Lightbox_Frontend {
 
         $this->assets->mark_front_needed();
 
+        libxml_use_internal_errors( $previous_libxml_errors );
         return $output;
     }
 
