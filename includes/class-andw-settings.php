@@ -71,19 +71,7 @@ class Andw_Lightbox_Settings {
             'design_overlay_color'   => '#000000',
             'design_overlay_opacity' => '0.92',
             'design_mobile_navigation' => '0',
-            'design_custom_css'      => '/* GLightbox 説明文エリアのカスタマイズ */
-.gslide-description {
-    /* 説明文全体のコンテナ */
-}
-.gdesc-inner {
-    /* 説明文内部コンテナ */
-}
-.gslide-title {
-    /* タイトル部分（h4要素） */
-}
-.gslide-desc {
-    /* 説明文テキスト部分（div要素） */
-}',
+            'design_custom_css'      => '',
         );
     }
 
@@ -267,6 +255,12 @@ class Andw_Lightbox_Settings {
             $sanitized['design_custom_css'] = sanitize_textarea_field( $input['design_custom_css'] );
         } else {
             $sanitized['design_custom_css'] = isset( $existing_options['design_custom_css'] ) ? $existing_options['design_custom_css'] : $defaults['design_custom_css'];
+        }
+
+        // WAF誤検知対策: 既存の問題データをクリア
+        if ( isset( $sanitized['design_custom_css'] ) &&
+             strpos( $sanitized['design_custom_css'], '/* GLightbox 説明文エリア' ) === 0 ) {
+            $sanitized['design_custom_css'] = '';
         }
 
         $this->options = wp_parse_args( $sanitized, $defaults );
