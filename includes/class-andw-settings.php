@@ -286,7 +286,7 @@ content:"-"; margin: 0 5px;
 
             // Restore half-width comment markers that were previously widened for WAF avoidance
             $css_content = str_replace(
-                array( "/\xEF\xBC\x8A", "\xEF\xBC\x8A/" ),
+                array( "\xEF\xBC\x8F\xEF\xBC\x8A", "\xEF\xBC\x8A\xEF\xBC\x8F" ),
                 array( '/*', '*/' ),
                 $css_content
             );

@@ -395,6 +395,10 @@ class Andw_Lightbox_Admin {
         );
 
 
+        echo '<div style="margin-top: 10px; padding: 8px; background: #e7f3ff; border: 1px solid #b3d9ff; border-radius: 4px;">';
+        echo '<p style="margin: 0; font-size: 12px; color: #0073aa;"><strong>💡 コメント使用について:</strong> CSSコメント（/* */）はWAF対策のため一時的に全角文字で保存されますが、実際のサイトでは正常に動作します。</p>';
+        echo '</div>';
+
         echo '<div style="margin-top: 10px; padding: 10px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 4px;">';
         echo '<h4 style="margin: 0 0 8px 0; font-size: 13px; color: #333;">参考テンプレート（コピー＆ペースト用）:</h4>';
         echo '<pre style="margin: 0; font-size: 12px; color: #666; white-space: pre-wrap;">/* GLightbox 説明文エリアのカスタマイズ */
@@ -422,5 +426,79 @@ color:#fff; display:inline; font-size:0.8rem; line-height:1.1;
 content:"-"; margin: 0 5px;
 }</pre>';
         echo '</div>';
+
+        // Add JavaScript for real-time WAF bypass
+        echo '<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const cssTextarea = document.getElementById("andw-custom-css");
+
+    if (cssTextarea) {
+        let isUpdating = false;
+
+        // Convert half-width to full-width comments for WAF protection
+        function wafProtectComments(content) {
+            return content
+                .replace(/\/\*/g, "／＊")  // /* to ／＊
+                .replace(/\*\//g, "＊／");  // */ to ＊／
+        }
+
+        // Convert full-width to half-width comments for display
+        function displayComments(content) {
+            return content
+                .replace(/／＊/g, "/*")      // ／＊ to /*
+                .replace(/＊／/g, "*/");     // ＊／ to */
+        }
+
+        // Handle input events
+        function handleInput() {
+            if (isUpdating) return;
+
+            isUpdating = true;
+            const cursorPosition = cssTextarea.selectionStart;
+            const originalContent = cssTextarea.value;
+            const protectedContent = wafProtectComments(originalContent);
+
+            if (originalContent !== protectedContent) {
+                cssTextarea.value = protectedContent;
+                // Restore cursor position (approximately)
+                cssTextarea.setSelectionRange(cursorPosition, cursorPosition);
+            }
+
+            isUpdating = false;
+        }
+
+        // Handle focus events for better UX
+        cssTextarea.addEventListener("focus", function() {
+            if (isUpdating) return;
+
+            isUpdating = true;
+            const displayContent = displayComments(cssTextarea.value);
+            cssTextarea.value = displayContent;
+            isUpdating = false;
+        });
+
+        cssTextarea.addEventListener("blur", function() {
+            if (isUpdating) return;
+
+            isUpdating = true;
+            const protectedContent = wafProtectComments(cssTextarea.value);
+            cssTextarea.value = protectedContent;
+            isUpdating = false;
+        });
+
+        // Handle input and paste events
+        cssTextarea.addEventListener("input", handleInput);
+        cssTextarea.addEventListener("paste", function() {
+            setTimeout(handleInput, 10);
+        });
+
+        // Initialize with protected content on page load
+        if (cssTextarea.value) {
+            const protectedContent = wafProtectComments(displayComments(cssTextarea.value));
+            cssTextarea.value = protectedContent;
+        }
+    }
+});
+</script>';
     }
 }
