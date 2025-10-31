@@ -252,16 +252,24 @@ class Andw_Lightbox_Settings {
         }
 
         if ( isset( $input['design_custom_css'] ) ) {
-            $sanitized['design_custom_css'] = sanitize_textarea_field( $input['design_custom_css'] );
+            $css_content = sanitize_textarea_field( $input['design_custom_css'] );
+
+            // Restore half-width comment markers that were previously widened for WAF avoidance
+            $css_content = str_replace(
+                array( "/\xEF\xBC\x8A", "\xEF\xBC\x8A/" ),
+                array( '/*', '*/' ),
+                $css_content
+            );
+
+            if ( 0 === strpos( ltrim( $css_content ), '/* GLightbox ' ) ) {
+                $css_content = '';
+            }
+
+            $sanitized['design_custom_css'] = $css_content;
         } else {
             $sanitized['design_custom_css'] = isset( $existing_options['design_custom_css'] ) ? $existing_options['design_custom_css'] : $defaults['design_custom_css'];
         }
 
-        // WAF誤検知対策: 既存の問題データをクリア
-        if ( isset( $sanitized['design_custom_css'] ) &&
-             strpos( $sanitized['design_custom_css'], '/* GLightbox 説明文エリア' ) === 0 ) {
-            $sanitized['design_custom_css'] = '';
-        }
 
         $this->options = wp_parse_args( $sanitized, $defaults );
 

@@ -388,11 +388,12 @@ class Andw_Lightbox_Admin {
     public function field_design_custom_css() {
         $value = $this->settings->get( 'design_custom_css' );
         printf(
-            '<textarea name="%1$s[design_custom_css]" rows="20" cols="50" class="large-text code">%2$s</textarea><br><span class="description">%3$s</span>',
+            '<textarea name="%1$s[design_custom_css]" rows="20" cols="50" class="large-text code" id="andw-custom-css">%2$s</textarea><br><span class="description">%3$s</span>',
             esc_attr( $this->option_name() ),
             esc_textarea( $value ),
-            esc_html__( 'GLightbox説明文エリア用のCSSルールを記述してください。', 'andw-lightbox' )
+            esc_html__( 'Provide custom CSS for the GLightbox presentation as needed.', 'andw-lightbox' )
         );
+
 
         echo '<div style="margin-top: 10px; padding: 10px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 4px;">';
         echo '<h4 style="margin: 0 0 8px 0; font-size: 13px; color: #333;">参考テンプレート（コピー＆ペースト用）:</h4>';
