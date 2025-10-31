@@ -396,18 +396,28 @@ class Andw_Lightbox_Admin {
         echo '<div style="margin-top: 10px; padding: 10px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 4px;">';
         echo '<h4 style="margin: 0 0 8px 0; font-size: 13px; color: #333;">参考テンプレート（コピー＆ペースト用）:</h4>';
         echo '<pre style="margin: 0; font-size: 12px; color: #666; white-space: pre-wrap;">/* GLightbox 説明文エリアのカスタマイズ */
-.glightbox-clean .gslide-description {
-    /* 説明文全体のコンテナ */
-background-color:rgba(0,0,0,0);
+.glightbox-clean .gslide-media{ /* メディア表示のコンテナ */
+margin-top:25px;
 }
-.glightbox-clean .gdesc-inner {
-    /* 説明文内部コンテナ */
+
+.glightbox-clean .gslide-description { /* 説明文全体のコンテナ */
+background-color:rgba(0,0,0,0); padding-bottom:10px;
 }
-.glightbox-clean .gslide-title {
-    /* タイトル部分（h4要素） */
+
+.glightbox-clean .gdesc-inner { /* 説明文内部コンテナ */
+padding: 0 0.5rem 0.2rem 0.5rem;
 }
-.glightbox-clean .gslide-desc {
-    /* 説明文テキスト部分（div要素） */
+
+.glightbox-clean .gslide-title { /* タイトル部分（h4要素） */
+color:#fff; display:inline; font-size:1rem; line-height:1.1;
+}
+
+.glightbox-clean .gslide-desc { /* 説明文テキスト部分（div要素） */
+color:#fff; display:inline; font-size:0.8rem; line-height:1.1;
+}
+
+.glightbox-clean .gslide-desc::before {
+content:"-"; margin: 0 5px;
 }</pre>';
         echo '</div>';
     }
